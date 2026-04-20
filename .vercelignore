@@ -1,0 +1,9 @@
+# Backend lives here but runs off-Vercel (Railway / Fly / VPS).
+server/
+
+# Dev logs
+logs/
+*.log
+
+# Important context docs we don't need to ship to the CDN
+important_info/

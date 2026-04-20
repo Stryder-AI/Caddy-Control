@@ -1,0 +1,238 @@
+@import "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Forest green palette */
+    --background: 0 0% 98%;
+    --foreground: 150 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 20% 10%;
+
+    /* Deep forest green */
+    --primary: 152 45% 18%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Emerald accent */
+    --accent: 155 60% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --secondary: 150 10% 94%;
+    --secondary-foreground: 150 20% 10%;
+
+    --muted: 150 8% 92%;
+    --muted-foreground: 150 10% 45%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 10% 88%;
+    --input: 150 10% 88%;
+    --ring: 155 60% 45%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --nav-bg: 181 75% 16%;
+    --nav-foreground: 0 0% 96%;
+    --panel-accent: 181 75% 16%;
+
+    --glass-bg: 0 0% 100% / 0.72;
+    --glass-border: 0 0% 100% / 0.25;
+    --glass-shadow: 150 20% 10% / 0.08;
+
+    --emerald-glow: 155 60% 45% / 0.4;
+    --danger: 0 72% 55%;
+    --danger-glow: 0 72% 55% / 0.4;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 12%;
+    --info: 200 80% 50%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Mapbox overrides */
+  .mapboxgl-ctrl-group {
+    border: none !important;
+    box-shadow: 0 4px 20px -4px hsl(var(--glass-shadow)) !important;
+    border-radius: var(--radius) !important;
+    overflow: hidden;
+  }
+
+  .mapboxgl-ctrl-group button {
+    background: hsl(var(--glass-bg)) !important;
+    backdrop-filter: blur(16px) !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .mapboxgl-popup-content {
+    background: hsl(var(--glass-bg)) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid hsl(var(--glass-border)) !important;
+    border-radius: var(--radius) !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 8px 32px -8px hsl(var(--glass-shadow)) !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  .mapboxgl-popup-tip {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: 0 8px 32px -8px hsl(var(--glass-shadow));
+  }
+
+  .glass-dark {
+    background: hsl(181 75% 16% / 0.92);
+    backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid hsl(181 60% 24% / 0.4);
+    box-shadow: 0 8px 32px -8px hsl(0 0% 0% / 0.3);
+  }
+
+  .nav-link {
+    @apply relative px-3 py-1.5 text-sm font-medium transition-all duration-200;
+    color: hsl(0 0% 100% / 0.65);
+  }
+
+  .nav-link:hover {
+    color: hsl(0 0% 100% / 0.9);
+  }
+
+  .nav-link.active {
+    color: hsl(0 0% 100%);
+  }
+
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: hsl(var(--accent));
+    border-radius: 1px;
+  }
+
+  .status-chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+    background: hsl(0 0% 100% / 0.1);
+    color: hsl(0 0% 100% / 0.8);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+  }
+
+  .cart-marker {
+    @apply flex items-center justify-center rounded-full font-mono text-xs font-bold;
+    width: 36px;
+    height: 36px;
+    background: hsl(var(--panel-accent));
+    color: hsl(0 0% 100%);
+    border: 2px solid hsl(var(--accent));
+    box-shadow: 0 2px 12px -2px hsl(var(--emerald-glow));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .cart-marker.selected {
+    border-color: hsl(var(--accent));
+    box-shadow: 0 0 0 4px hsl(var(--emerald-glow)), 0 4px 20px -2px hsl(var(--emerald-glow));
+    transform: scale(1.15);
+  }
+
+  .cart-marker.inactive {
+    opacity: 0.45;
+    border-color: hsl(var(--muted-foreground));
+    box-shadow: none;
+  }
+
+  .cart-marker.danger {
+    border-color: hsl(var(--danger));
+    box-shadow: 0 0 0 3px hsl(var(--danger-glow)), 0 4px 16px -2px hsl(var(--danger-glow));
+    animation: pulse-danger 2s ease-in-out infinite;
+  }
+
+  .cart-marker.bypass {
+    border-color: hsl(var(--warning));
+    box-shadow: 0 0 0 3px hsl(38 92% 50% / 0.4), 0 4px 16px -2px hsl(38 92% 50% / 0.4);
+    animation: pulse-bypass 1.2s ease-in-out infinite;
+  }
+
+  .cart-marker-wrapper.hidden {
+    display: none;
+  }
+
+  @keyframes pulse-danger {
+    0%, 100% { box-shadow: 0 0 0 3px hsl(var(--danger-glow)), 0 4px 16px -2px hsl(var(--danger-glow)); }
+    50% { box-shadow: 0 0 0 6px hsl(0 72% 55% / 0.15), 0 4px 20px -2px hsl(var(--danger-glow)); }
+  }
+
+  @keyframes pulse-bypass {
+    0%, 100% { box-shadow: 0 0 0 3px hsl(38 92% 50% / 0.4), 0 4px 16px -2px hsl(38 92% 50% / 0.4); }
+    50% { box-shadow: 0 0 0 7px hsl(38 92% 50% / 0.12), 0 4px 20px -2px hsl(38 92% 50% / 0.5); }
+  }
+
+  .btn-bypass {
+    @apply relative w-full py-3.5 px-6 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(155 65% 38%));
+    color: hsl(0 0% 100%);
+    box-shadow: 0 4px 16px -4px hsl(var(--emerald-glow));
+  }
+
+  .btn-bypass:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px -4px hsl(var(--emerald-glow));
+  }
+
+  .btn-bypass:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btn-bypass.active {
+    background: linear-gradient(135deg, hsl(38 92% 50%), hsl(25 90% 48%));
+    box-shadow: 0 4px 16px -4px hsl(38 92% 50% / 0.4);
+  }
+
+  .alert-row {
+    @apply transition-colors duration-150;
+  }
+
+  .alert-row:hover {
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}

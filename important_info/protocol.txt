@@ -1,0 +1,3046 @@
+File Name  iStartek GPS Tracker Protocol  Ver.          1.6
+Update     2022-08-03                     Page  1 of 53
+
+  iStartek GPS tracker Communication Protocol
+
+                                          Ver.: V1.6
+                                    www.istartek.com
+
+                                                  Applied Models
+The document describes the format of position/alarm GPRS data, and it is applied
+for the following models:
+ VT100
+ VT100-L
+ VT200-L
+ VT200
+ PT60
+                               File Name  iStartek GPS Tracker Protocol  Ver.          1.6
+                               Update     2022-08-03                     Page  2 of 53
+
+Protocol modification record:
+
+Version  Modify Content
+V1.0     Initial version
+V1.1     01 Added command and descriptions for 144, 212, 251, and 901.
+V1.2     02 Added 808 command to query parameters, support 100, 101, 102, 105, 106, 109 command
+         01 Added the definition description of the index of the 211 command.
+V1.3     02 Modified the 252 command, remove the magnetic reader option settings.
+V1.4     03 Added 260, 261, 262, 263, 264, 265, 270 command functions, and add 56 event code.
+V1.5     04 139 command added option for 250cm Ultrasonic fuel sensor.
+V1.6     05 Added OBD-data data and OBD accessories.
+         06 Added the description of the calculation method of the data packet checksum.
+         01 Added 142 instructions to set the data source of the fuel tank.
+         02 Modified the fuel tank and AD1, AD2 in the 138, 139, 140, and 141 command to have a
+         non-one-to-one correspondence. You can set the data source through 142 command.
+         01 Added 147, 154, 271, 803 command functions
+         02 Modified the description of the authorization time of the 144 instruction
+         03 Added 57 events
+         01 Modified the description and definition of commands 211, 260, 261, 262, 263, 264, 265
+         02 Added the explanation of picture name for the 54 events in Appendix A
+         03 Modified the description of point 03 in the 800 instruction
+         01 Add 280 command
+         02 Add 252 command to set WIFI Accessory
+
+                               Content
+
+1. Copyright and Disclaimer ...................................................................................................................................................5
+2. GPRS Command Format .................................................................................................................................................... 5
+3. GPRS Event Data Format ................................................................................................................................................... 5
+4. SMS Command Format ......................................................................................................................................................9
+5. SMS Event Data Format ..................................................................................................................................................... 9
+6. Command List .................................................................................................................................................................. 10
+
+         000 ­ Ordinary upload of device positioning data package ................................................................................10
+         010 ­ Ordinary upload of device positioning data package ................................................................................11
+         020 ­ Compressed upload of device positioning data package ..........................................................................11
+         100 ­ Set the GPRS parameters of server 1 .......................................................................................................... 11
+         101 ­ Set up a Backup Server for Server 1 ........................................................................................................... 12
+         102 ­ Set the GPRS Time Interval of Server 1 ...................................................................................................... 12
+         103 ­ Set the Reliable Data Transmission Mode of Server 1 .............................................................................. 13
+         104 ­ Set Server 1 Data Sorting Transmission Mode .......................................................................................... 14
+         105 ­ Set the GPRS Parameters of Server 2 ..........................................................................................................14
+         106 ­ Set the GPRS Time Interval of Server 2 ...................................................................................................... 14
+         107 ­ Set the Reliable Data Transmission Mode of Server 2 .............................................................................. 15
+         108 ­ Set Server 2 Data Sorting Transmission Mode .......................................................................................... 16
+File Name  iStartek GPS Tracker Protocol  Ver.          1.6
+Update     2022-08-03                     Page  3 of 53
+
+109 ­ Set APN .......................................................................................................................................................... 16
+110 ­ Set Device ID ................................................................................................................................................. 16
+111 ­Set DNS IP .......................................................................................................................................................17
+120 ­ Set Track by Distance Interval .................................................................................................................... 17
+121 ­ Set Heading Change Report ......................................................................................................................... 17
+122 ­ Set Heartbeat .................................................................................................................................................18
+123 ­ Set Speeding Alarm .......................................................................................................................................18
+124 ­ Set Sleep Mode .............................................................................................................................................. 19
+125 ­ Set a Circular Geo-fence ............................................................................................................................... 19
+126 ­ Set Geo-fence Name ......................................................................................................................................20
+127 ­ Delete Circular Geo-fence ............................................................................................................................ 20
+128 ­ Set Acceleration Alarm .................................................................................................................................21
+129 ­ Set Deceleration Alarm ................................................................................................................................ 21
+130 ­ Set Harsh Turning Alarm ............................................................................................................................. 21
+131 ­ Set Impact Alarm .......................................................................................................................................... 22
+132 ­ Set Vibration (tow) alarm ............................................................................................................................ 22
+133 ­ Set Idling Alarm (stop without ACC OFF) ...................................................................................................23
+134 ­ Set Fatigue Driving Alarm ............................................................................................................................23
+135 ­ Set Temperature Sensor .............................................................................................................................. 24
+136 ­ Set High and Low Temperature Alarm .......................................................................................................24
+137 ­ Get Temperature Value ................................................................................................................................ 25
+138 ­ Set Fuel Tank Parameters ............................................................................................................................ 25
+139 ­ Set Fuel Sensor Type .................................................................................................................................... 26
+140 ­ Set Fuel Steal Alarm ......................................................................................................................................26
+141 ­ Set Low Fuel Alarm .......................................................................................................................................27
+142 ­ Set the data source of the fuel tank .............................................................................................................27
+144 ­ Authorize RFID/iButton ...............................................................................................................................28
+145 ­ Delete RFID/iButton .....................................................................................................................................29
+146 ­ Check Authorization Status of RFID/iButton Card ....................................................................................29
+147 ­ Set RFID/iButton Authorized Ignition Time ..............................................................................................30
+150 ­ Set GPS Log Time Interval ............................................................................................................................30
+151 ­ Set Vibration Detection Sensitivity ............................................................................................................. 30
+152 ­ Set Arming/Disarming ................................................................................................................................. 31
+153 ­ Set GSM Jamming Alarm .............................................................................................................................. 31
+154 ­ Set low speed alarm ..................................................................................................................................... 31
+200 ­ Set SMS Time Interval .................................................................................................................................. 32
+201 ­ Set Authorized Phone Number ....................................................................................................................32
+202 ­ Set Device Call Event .................................................................................................................................... 33
+203 ­ Set the Authorized Number SMS Alarm Event .......................................................................................... 33
+204 ­ Set the Characters for Event SMS Alarm .................................................................................................... 34
+205 ­ Set Two-way Audio Events .......................................................................................................................... 34
+206 ­ Set up Listening Events ................................................................................................................................35
+210 ­ Set GPRS Alarm Event .................................................................................................................................. 35
+File Name  iStartek GPS Tracker Protocol  Ver.          1.6
+Update     2022-08-03                     Page  4 of 53
+
+211 ­ Set Photo Taking Event ................................................................................................................................ 35
+212 ­ Set Output to Generate Output Events ....................................................................................................... 36
+250 ­ Set Input Working Mode .............................................................................................................................. 36
+251 ­ Set Output Working Mode ........................................................................................................................... 37
+252 ­ Set RS232 Port to Connect External Devices ............................................................................................. 38
+260 ­ Set the Resolution when taking photo ........................................................................................................39
+261 ­ Set the time interval for the camera to take photos ..................................................................................39
+262 ­ Command to take photos ............................................................................................................................. 40
+263 ­ Read the list of photos ..................................................................................................................................40
+264 ­ Delete photo .................................................................................................................................................. 41
+265­ Set the time interval for the camera to take photos ...................................................................................41
+270 - Set vehicle Type .............................................................................................................................................41
+271 ­ OBD Command Transparent Transmission .................................................................................................... 42
+280 ­ Set WIFI AP ......................................................................................................................................................43
+600 ­ Set SMS Command Password ...................................................................................................................... 43
+601 ­ Set SMS Time Zone ....................................................................................................................................... 44
+602 ­ Set SIM Card PIN Code ................................................................................................................................. 44
+610 ­ Set Initial Mileage ......................................................................................................................................... 44
+611 ­ Clear GPRS/SMS Buffer ................................................................................................................................ 45
+612 ­ Initialization Parameter ...............................................................................................................................45
+620 ­ Set Device LED Indicator Mode ................................................................................................................... 45
+800 ­ Get Current Location .................................................................................................................................... 46
+801 ­ Get Device SN, IMEI, Software Version .......................................................................................................46
+802 ­ Get Device Working Status .......................................................................................................................... 47
+803 ­ Check SIM Card CCID ...................................................................................................................................... 47
+808 ­ Check device Parameters .............................................................................................................................47
+900 ­ Output Control .............................................................................................................................................. 48
+901 ­ Output ControlMode Output ............................................................................................................... 49
+910 ­ Restart Device or Module ............................................................................................................................ 49
+990 ­ FOTA Upgrade Detection ............................................................................................................................. 49
+991 ­ FOTA Upgrade Authorization ......................................................................................................................50
+992 ­ FOTA data package download .....................................................................................................................50
+993 ­ FOTA Data Check .......................................................................................................................................... 51
+994 ­ Device Update FOTA Program .....................................................................................................................51
+995 ­ Cancel FOTA .................................................................................................................................................. 52
+Appendix A-Alarm Event Codes and Alarm Characters ......................................................................52
+                                    File Name  iStartek GPS Tracker Protocol           Ver.                 1.6
+                                    Update     2022-08-03                              Page         5 of 53
+
+1. Copyright and Disclaimer
+
+Shenzhen iStartek Technology Co., Ltd. All rights reserved Copyright © 2019 iStartek.
+
+iStartek and  are registered trademarks of Shenzhen iStartek Technology Co., Ltd.
+
+This manual cannot be copied for any purpose, disseminated in any way without the written authorization of
+
+iStartek.
+
+iStartek shall not be liable for direct, indirect or all losses (including but not limited to economic losses, personal
+
+injuries, property and assets) caused by the use or inappropriate use of the product or documents.
+
+2. GPRS Command Format
+
+GPRS command packet formatfrom server to tracker
+
+$$<pack-no><pack-len>,<ID>,<cmd-code>,<cmd-data><checksum>\r\n
+
+GPRS command packet formatfrom tracker to server
+
+&&<pack-no><pack-len>,<ID>,<cmd-code>,<cmd-data><checksum>\r\n
+Description
+The comma (,) is a symbol used to separate each data item, and there is no space before and after the comma.
+
+&&: It is the header of packet from tracker to server
+$$: It is the header of packet from server to tracker
+
+pack-noData packet number, 1 byte, calculated cyclically from 0x3A to 0x7E. When the platform receives the
+request instruction from the device, or the device receives the instruction sent by the platform, and needs to reply
+to the other party, the reply pack-no must be consistent with the received instruction.
+pack-len: Data packet length, in decimal format, the data packet length includes the data of ",<ID>,<cmd-
+code>,<cmd-data>" (note: include the comma before the ID).
+IDDevice ID number, the default is the IMEI number of the device.
+cmd-codeCommand code.
+cmd-dataThe content of the command data, see the description of each command in the following protocol.
+checksum: the checksum of the data packet, which is the lowest of the cumulative sum calculation result of all
+the data before the checksum (&&<pack-no><pack-len>,<ID>,<cmd-code>,<cmd-data>) One byte, expressed
+in a 2-digit hexadecimal string format.
+For example, the cumulative result of the data packet "&&A20,021104023195429,800"
+is'&'+'&'+'A'+'2'+'0'+','+'0'+'2'+'1' +'1'+'0'+'4'+'0'+'2'+'3'+'1'+'9'+'5'+'4'+'2'+'9'+' ,'+'8'+'0'+'0'=0x04DA, take
+the lowest byte as 0xDA, and use a 2-digit hexadecimal string as "DA".
+
+\r\nIt is the ending character<CR><LF>
+
+If not specified, multi-byte binary data in cmd-data use big endian format. i.e. Most significant byte first.
+
+3. GPRS Event Data Format
+
+&&<pack-no><pack-len>,<ID>,<cmd>,<alm-code>,<alm-data>,<date-time>,<fix_flag>,<latitude>,<longitude
+>,<sat-quantity>,<HDOP>,<speed>,<course>,<altitude>,<odometer>,<MCC|MNC|LAC|CI>,<CSQ-quanlity>,<s
+ystem-sta>,<in-sta>,<out-sta>,<ext-V|bat-V|ad1-V|...|adn-
+V>,<procode>,<fule_liter>,<tempsensor><checksum>\r\n GPRS event data description
+Example:
+&&A147,021104023195429,000,0,,180106093046,A,22.646430,114.065730,8,0.9,54,86,76,326781,460|0|27B3|0EA
+7,27,0000000F,02,01,04E2|018C|01C8|0000,1,0104B0,01013D|02813546\r\n
+
+Item          Description                                                     Example
+pack-head
+pack-no       Data header, 2 bytes                                            &&
+
+              Data packet number, 1 byte, calculated cyclically from 0x3A to A
+              0x7E. When the platform receives the request instruction from
+
+              the device, or the device receives the instruction sent by the
+                      File Name  iStartek GPS Tracker Protocol                     Ver.           1.6
+                      Update     2022-08-03                                        Page      6 of 53
+
+              platform, and needs to reply to the other party, the reply
+
+              pack-no must be consistent with the received instruction
+
+pack-len      Data packet length, decimal character format, the length is   147
+
+              sum of
+
+              {,<ID>,000,<alm-code>,<alm-data>,<date-time>,<fix_flag>,
+              <latitude>,<longitude>,<sat-quantity>,<HDOP>,<speed>,<
+
+              course>,<altitude>,<odometer>,<MCC|MNC|LAC|CI>,<CSQ-
+              quanlity>,<status>,<in-sta>,<out-sta>,<ext-V|bat-V|ad1-V|...
+
+              |adn-V>,<pro-code>,<fule_level>,<temp-sensor>}
+
+ID            Device ID number, composed of 3~16 numbers or English         021104023195429
+cmd           letters, the default is the IMEI number of device
+
+              GPRS command data type flag
+              000 is a normal data from tracker to server, and the platform
+              does not need to reply to receive confirmation;
+              010 is a normal data from tracker to server, which requires the 000
+              platform to reply to the receipt confirmation;
+
+              020 is a compressed data package from tracker to server,
+              which requires the platform to reply and confirm receipt.
+
+alm-code      Event code of the alarm, please refer to Appendix A           0
+alm-data      Additional description of alarm events, please refer to       Empty means the event has no
+date-time     Appendix A                                                    additional description
+              GMT0 date & time, format: YYMMDDHHmmss
+fix_flag      01 YY: Year, which is the value of the year minus 2000, 2     180106093046 means
+latitude      characters                                                    2018-1-6 9:30:46
+longitude     02 MM: Month, 01-12, 2 characters
+sat-quantity  03 DD: day, 01--31, 2 characters                              A
+HDOP          04 HH: hour, 00--23, 2 characters                             22.646430
+speed         05 mm: minutes, 00-59, 2 characters
+course        06 ss: second, 00--59, 2 characters                           114.065730
+altitude                                                                    8=8 satellites
+odometer      GPS Location status indicator, A = valid, V = invalid         0.9
+MCC|MNC|LA                                                                  54
+C|CI          Latitude, the unit is degree, decimal format                  86
+              If it is south latitude, add-in front                         76
+              Longitude, the unit is degree, decimal format                 326781
+              If it is west longitude, add-in front                         460|0|27B3|0EA7
+              Number of satellite signals received, decimal format          MCC460;
+              Horizontal positioning accuracy, decimal format, the smaller  MNC0;
+              the value, the more accurate the accuracy
+              GPS speed, the unit is km/h, decimal format
+              The direction and angle of the movement, in degrees, in
+              decimal format
+              Altitude, in meters, decimal format
+              The accumulated total mileage, in meters, in decimal format
+              Base station information, `|' is used to separate each data;
+              MCC, MNC: Decimal format
+              LAC, CI: Hexadecimal format
+              File Name  iStartek GPS Tracker Protocol                                             Ver.       1.6
+              Update     2022-08-03                                                                Page  7 of 53
+
+CSQ-quanlity  GSM signal value, 0-31, decimal format                                   LAC0x27B3;
+system-sta    The working status of tracker, in 8-bit hexadecimal format,              CI0x0EA7;
+              each bit represents a working status:                                    27
+              Bit0: GPRS connection status of IP1, 1=connected,
+              0=disconnected                                                           0000000F
+              Bit1: GPRS connection status of IP2, 1=connected,
+              0=disconnected
+              Bit2: GPS positioning status, 1=valid, 0=invalid
+              Bit3: External power connection status, 1=connected,
+              0=disconnected
+              Bit4: GPS antenna connection status, 1=connected,
+              0=disconnected
+              Bit5: Stop status, 1=stop, 0=move
+              Bit6: Armed state, 1=armed, 0=disarmed
+              Bit7: RFID/iButton login status, 1=log in, 0=log out
+              Bit8~bit31: reserved
+
+in-sta        Input status, 2-digit hexadecimal format, each bit represents a
+              working status:
+              bit[0]-input1 status, 1=triggered, 0=non-triggered                       02
+              bit[1]-input2 status, 1=triggered, 0=non-triggered                       input2 is in the trigger state,
+              bit[2]-input3 status, 1=triggered, 0=non-triggered                       other inputs are in the
+              etc.;
+                                                                                       non-trigger state
+
+out-sta       Output status, 2-digit hexadecimal format, each bit represents
+              a working status:
+              bit[0] ­ output1 status, 1=active, 0=inactive                            01
+              bit[1] ­ output2 status, 1=active, 0=inactive                            output1=active
+              bit[2] ­ output3 state, 1=active, 0=inactive
+              etc.;
+
+ext-V|bat-V|a                                                                          04E2|018C|01C8|0000
+d1-V|...|adn-V                                                                         The external power supply
+                                                                                       voltage value is 0x04E2=1250,
+                         Voltage value, the value of V*100, in hexadecimal format;     V=1250/100=12.50V;
+                         `|' is used to separate each data;                            The internal battery voltage
+                         ext-V: external power supply voltage value;                   value is 0x018C=396,
+                         bat-V: internal battery voltage value;                        V=396/100=3.96V;
+                         ad1-V... and-V: is the voltage value of the corresponding AD  The AD1 input voltage value is
+                         input ports ad1... adn. Different devices support different   0x01C8=456,
+                         numbers of AD input ports;                                    V=456/100=4.56V;
+                                                                                       AD2 input voltage value is
+                                                                                       0x0000=0, V=0/100=0V;
+
+                                                                                       The device supports two AD
+                                                                                       inputs.
+
+pro-code      Extended protocol version number to distinguish different                1
+
+              extended protocol functions. Decimal format.
+                                          File Name  iStartek GPS Tracker Protocol      Ver.                      1.6
+                                          Update     2022-08-03                         Page                 8 of 53
+
+fule_liter   The number of liters of the fuel tank. If the device is connected  0104B0
+temp-sensor  to multiple fuel sensors, upload the value of multiple fuel        01# Fuel tank: 0x04B0, the
+             tanks in hexadecimal format;                                       decimal value is 1200, the fuel
+                                                                                volume is 120.0 liters
+             `|' is used to separate each fuel tank data;
+             The number of liters of a fuel tank is expressed in 6-digit        The 138, 139, 140 and 142
+             hexadecimal format, the first 2 characters are the number of       commands must be used to
+             the fuel tank, and the last 4 characters are the number of         set the fuel tank parameters to
+             liters*10.                                                         detect the liters.
+
+             The temperature value of the temperature sensor, if the            01013D|028135
+             device is connected to multiple sensors, upload the value of       01#Temperature sensor:
+             multiple sensors in hexadecimal format;                            0x013D, the highest bit is 0 for
+                                                                                positive temperature value,
+             `|' is used to separate each data;                                 decimal value is 317,
+             A sensor value is expressed in a 6-digit hexadecimal character     3176/10= 31.7
+             format, the first 2 characters are the sensor number, the last 4   02#Temperature sensor:
+             characters are the temperature value, the highest bit of the       0x8135, the highest digit is 1
+             temperature value is the sign bit, and the value is the actual     for negative temperature
+             temperature value *10.                                             value, the decimal value is 309
+                                                                                (0x0135), 309/10= 30.9, then
+                                                                                -30.9
+
+OBD-data                                  The speed per minute, the             800
+                         RPM              unit is r/min, a decimal string.      Indicates that the engine speed
+                                          It is empty when the data             is 800 revolutions per minute
+RPM|ENGINE_L                              cannot be read.
+OAD|MAF_FLO
+W|INTAKE_PRES                             Percentage of engine load. 40
+SURE|INTAKE_T ENGINE_LOAD
+EMP|THROTTLE|                             The unit is% (percent), a             Indicates that the engine load
+COOLANT_TEMP
+|INSTANT_FUEL| MAF_FLOW                   decimal string. It is empty           is 40%
+FUEL_LEVEL
+                                          when the data cannot be read.
+                         INTAKE_PRESSURE
+                                          Unit: g/s (gallons per second), 4
+                         INTAKE_TEMP
+                                          decimal string. It is empty           Indicates that the intake air
+                         THROTTLE
+                                          when the data cannot be read. flow is 4 gallons per second
+                         COOLANT_TEMP
+                                          The unit is kPa (kilopascal), a 45
+                         INSTANT_FUEL
+                                          decimal string. It is empty           Indicates the absolute pressure
+
+                                          when the data cannot be read. of the intake pipe is 45 kPa
+
+                                          Unit:  (Celsius), decimal             83
+
+                                          string. It is the actual value        Indicates the intake air
+                                          +40°C. It is empty when the           temperature 83-40=43
+                                          data cannot be read.
+
+                                          The unit is% (percent), a             79
+
+                                          decimal string. It is empty           Indicates that the throttle
+
+                                          when the data cannot be read. position is at 79%
+
+                                          Engine coolant temperature. 128
+
+                                          The unit is  (Celsius), a             Indicates engine coolant 128-
+                                          decimal string. It is the actual      40=88
+                                          value +40°C. It is empty when
+
+                                          the data cannot be read.
+
+                                          The unit is L/h. Decimal string. 35
+
+                                          It is the value of L*10, which is Indicates instantaneous fuel
+
+                                          accurate to one decimal place. consumption 3.5 liters/h
+                                          It is empty when the data
+
+                                          cannot be read.
+                                       File Name  iStartek GPS Tracker Protocol        Ver.       1.6
+                                       Update     2022-08-03                           Page  9 of 53
+
+                                       The amount of remaining oil. 80% means 80% oil remaining
+
+                                       Decimal string. The                 35L means the remaining 35L
+
+                                       percentage after the value is       oil volume
+                                       the remaining oil percentage.
+          FUEL_LEVEL                   The number with L after the
+
+                                       value is the remaining oil
+
+                                       volume in liters. It is empty
+
+                                       when the data cannot be read.
+
+checksum  The checksum of the data packet, in 2-digit hexadecimal
+\r\n
+          format, the accumulation and calculation result of all the data
+
+          before the checksum
+
+          {&&<pack-no><pack-len>,<ID>,000,<alm-code>,<alm-data
+
+          >,<date-time>,<fix_flag>,<latitude>,<longitude>,<                46
+
+          sat-quantity>,<speed>,<course>,<altitude>,<odometer>,< The lowest byte that represents
+
+          MCC|MNC|LAC|CI>,<CSQ-quanlity>,<status>,<in-sta>,<out- the result of the accumulation
+
+          sta>,<bat-ad|ext-ad|ad1|...                                      is 0x46, and it is represented
+
+          |adn>,<pro-code>,<fule_data>,<temp-sensor>}. the lowest by a hexadecimal string as "46"
+          byte of the accumulation and calculation result of is expressed
+
+          in a hexadecimal string.
+
+          End of data packet, which is <CR><LF>                            \r\n
+
+4. SMS Command Format
+
+SMS command format (data sent from mobile phone to tracker):
+<password>,<cmd-code>,<cmd-data>
+
+SMS command format (data is sent from tracker to mobile phone):
+<cmd-code>,<cmd-data>
+Description:
+The comma (,) is a symbol used to separate each data, and there is no space before and after the comma.
+password: SMS command password, 4 characters, can be composed of any numbers, letters, and symbols. The
+default is 0000.
+cmd-code: command code.
+cmd-data: command data content, see the description of each command in the following protocol.
+If not specified, multi-byte binary data in cmd-data use big endian format. i.e. Most significant byte first
+
+5. SMS Event Data Format
+
+<Alarm_Head_String>,<date-time>,<fix_flag>,<speed>,<course>,<altitude>,<CSQ-quanlity>,http://maps.googl
+e.com/maps?q=<latitude>,<longitude>
+
+GPRS Event data description
+
+Example:
+
+SOS,082619 09:30:46,A,54,286,76,31,http://maps.google.com/maps?q=22.646430,114.065730
+
+Item               Description                                        Example
+
+Alarm_Head_String  The header name of the SMS alarm event,
+
+                   please refer to Appendix A.                        SOS
+
+                   In and out of the fence event, add (fence name) Exit Fence(Home)
+                   after Alarm_Head_String
+                                File Name iStartek GPS Tracker Protocol           Ver.                         1.6
+
+                                Update               2022-08-03                   Page                         10 of 53
+
+date-time              GMT0 + Time zone, date & time, format:
+                       MMDDYY hh:mm:ss
+fix_flag
+speed                  01 MM: month, 01-12, 2 characters
+course
+altitude               02 DD: day, 01--31, 2 characters               082619 09:30:46=2019-08-26
+CSQ-quanlity           03 YY: year, which is the year minus 2000, 2   09:30:46
+http://maps.google.co  characters
+m/maps?q=
+latitude               04 hh: hour, 00--23, 2 characters
+longitude
+                       05 mm: minutes, 00-59, 2 characters
+
+                       06 ss: second, 00--59, 2 characters
+
+                       07 YY and hh are separated by a space symbol
+
+                       08 hh, mm, ss are separated by ":"
+
+                       GPS Location status indicator, A = valid, V =  A
+
+                       invalid
+
+                       GPS speed, the unit is km/h, decimal format    54
+
+                       The direction and angle of the movement, in    286
+
+                       degrees, in decimal format
+
+                       Altitude, in meters, decimal format            76
+
+                       GSM signal value, 0-31, decimal format         31
+
+                       Links located on Google Maps                   http://maps.google.com/maps?q=
+
+                       Latitude, in degrees, decimal format           22.646430
+                       If it is south latitude, add - in front        114.065730
+                       Longitude, in degrees, decimal format
+                       If it is west longitude, add - in front
+
+6. Command List
+
+000 ­ Ordinary upload of device positioning data package (no need for platform to reply receipt confirmation)
+
+Supported    GPRS
+Modes        See above GPRS event data packet format
+Command to
+Server
+
+Command      01 Upload the positioning data package, the device will automatically delete the data after
+Description  uploading
+Command
+Reply        No
+
+Command      See above GPRS event data packet format
+Example
+
+Remarks
+                                           File Name  iStartek GPS Tracker Protocol  Ver.                              1.6
+                                           Update     2022-08-03                     Page                     11 of 53
+
+010 ­ Ordinary upload of device positioning data package (requires platform to reply receipt confirmation)
+
+Supported    GPRS
+Modes
+             See above GPRS event data packet format
+Command to
+Server       01 The positioning data package is uploaded. After uploading, the platform must reply receipt
+Command      confirmation before deleting the positioning data
+Description  02 The pack-no in the platform's reply must be the same as the pack-no in the uploaded
+             positioning data package
+
+Command      010,1
+Reply        See above GPRS event data packet format
+Command
+Example
+Remarks
+
+020 ­ Compressed upload of device positioning data package (requires platform to reply receipt confirmation)
+
+Supported    GPRS
+Modes
+             See above GPRS event data packet format
+Command to
+Server       01 Multiple positioning data packages are compressed and uploaded. After uploading, the
+Command      platform must reply receipt confirmation before deleting the positioning data
+Description  02 The pack-no in the platform's reply must be the same as the pack-no in the uploaded
+             positioning data package
+
+Command      020,1
+Reply        See above GPRS event data packet format
+Command
+Example
+Remarks
+
+100 ­ Set the GPRS parameters of server 1
+
+Supported    GPRS/SMS
+Modes
+             100,mode,IP,Port
+Command to
+Tracker      01 mode: GPRS connection mode,
+Command            0-Close GPRS connection, at this time any GPRS event will not be generated and sent to
+Description
+             server;
+                                              File Name  iStartek GPS Tracker Protocol  Ver.                1.6
+                                              Update     2022-08-03                     Page       12 of 53
+
+             1-TCP connection mode;
+             2-UDP connection mode;
+
+             02 IP: The IP address or domain of the server, up to 32 characters;
+             03 Port: server port, decimal format, range value: 2~65534;
+
+             04 This command sets the IP and port of the main server, and 101 command sets the IP and port
+
+             of the backup server. After the backup server is set, if the main server fails to connect (try to
+             connect 5 times), the device will actively connect to the backup server (if it fails to connect to the
+
+             backup server after 5 attempts, try to connect to the main server again).
+
+Command      100,<result>
+Reply        result: The result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport- the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             100,1,istartracker.com,8011
+
+101 ­ Set up a Backup Server for Server 1
+
+Supported    GPRS/SMS
+Modes
+
+Command to   101, IP,Port
+Tracker
+Command      01 IP: The IP address or domain of the backup server, up to 32 characters;
+Description  02 Port: the port of the server, in decimal format, range value: 2~65534;
+             03 This command sets the IP and port of the backup server. After the backup server is set, if the
+             main server fails to connect (try to connect 5 times), the device will actively connect to the backup
+             server (if you try to connect to the backup server 5 times) If the connection fails, try to connect to
+             the main server again);
+             04 The connection mode is subject to the mode set by 100 instructions;
+             05 The device will not connect to the main server and backup server at the same time.
+
+Command      101,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport-the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             101,87.172.73.51,8011
+
+102 ­ Set the GPRS Time Interval of Server 1
+
+Supported    GPRS/SMS
+Modes        102,normal_time,ACC_Off_time,stopping_time
+Command to   01 normal_time: Normal time interval. When the conditions of ACC_Off_time or stopping_time are
+Tracker
+Command
+             File Name                                     iStartek GPS Tracker Protocol  Ver.              1.6
+             Update                                        2022-08-03                     Page     13 of 53
+
+Description  not met, the device will upload GPRS positioning data at normal_time intervals; the unit is second,
+             and the maximum is 65535 seconds.
+Command      02 ACC_Off_time: The time interval when ACC is off. When ACC_Off_time is set, normal_time is the
+Reply        time interval when ACC is on. The unit is seconds, and the maximum is 65535 seconds.
+Command      03 stopping_time: the time interval when the device stops. When stopping_time is set, the device
+Example      will upload at normal_time intervals when the device is moving. The unit is seconds, and the
+             maximum is 65535 seconds.
+Remarks      04 When both ACC_Off_time and stopping_time are set at the same time, the data will be
+             uploaded according to the conditions of ACC_Off_time first.
+
+             102,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport- the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             102,10
+             Set the normal time interval to 10 seconds;
+             102,10,60
+             Set the ACC on time interval to 10 seconds, and the ACC off time interval to 60 seconds;
+             102,10,,60
+             Set the normal time interval to 10 seconds when moving, and 60 seconds when stationary;
+
+103 ­ Set the Reliable Data Transmission Mode of Server 1
+
+Supported    GPRS/SMS
+Modes
+             103,mode
+Command to
+Tracker      01 mode: The method of reliable data upload, =0 means the device automatically deletes the data
+Command      after the data is uploaded, =1 means the device needs the platform to reply to confirm data
+Description  uploaded before deleting the data; the default is 0.
+             02 When selecting UDP to upload data, it is recommended to set the mode=1 transmission mode,
+             because UDP is an unreliable transmission protocol.
+             03 When mode=0, the positioning data is uploaded with the 000 command;
+             04 When mode=1, the positioning data is uploaded with the 010 command, The receipt
+             confirmation command returned by the platform also needs to be responded with the 010
+             command, and the pack-no must also be consistent with the pack-no of the positioningdata
+             packet.
+
+Command      103,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport-the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             103,0
+                                              File Name  iStartek GPS Tracker Protocol  Ver.                1.6
+                                              Update     2022-08-03                     Page       14 of 53
+
+104 ­ Set Server 1 Data Sorting Transmission Mode
+
+Supported    GPRS/SMS
+Modes
+             104,mode
+Command to
+Tracker      01 mode: the method of sorting and uploading data, =0 means that real-time data is uploaded
+Command      first when there is buffer, =1 means that all data is uploaded in FIFO mode; the default is 0.
+Description  02 When real-time tracking is required, it is recommended to set mode=0 transmission mode.
+
+Command      104,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      104,0
+Example
+Remarks
+
+105 ­ Set the GPRS Parameters of Server 2
+
+Supported    GPRS/SMS
+Modes
+Command to   105,mode,IP,Port
+Tracker
+Command      01 mode: GPRS connection mode,
+Description        0-Close the GPRS connection, and no GPRS events will be sent to server 2 at this time;
+                   1-TCP connection mode;
+Command            2-UDP connection mode;
+Reply
+             02 IP: The IP address or domain of the server, up to 32 characters;
+             03 Port: the port of the server, in decimal format, range value: 2~65534;
+             04 When data needs to be uploaded to two servers at the same time, server 2 can be set. For
+             example, when you need to upload data to your own server and government server.
+             105,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      105,1,istartracker.com,8012
+Example
+Remarks
+
+106 ­ Set the GPRS Time Interval of Server 2
+
+Supported    GPRS/SMS
+Modes
+
+Command to   106,normal_time,ACC_Off_time,stopping_time
+Tracker      01 normal_time: Normal time interval. When the conditions of ACC_Off_time or stopping_time are
+Command
+             File Name                                     iStartek GPS Tracker Protocol  Ver.              1.6
+             Update                                        2022-08-03                     Page     15 of 53
+
+Description  not met, the device will upload GPRS positioning data at normal_time intervals; the unit is second,
+             and the maximum is 65535 seconds.
+Command      02 ACC_Off_time: The time interval when ACC is off. When ACC_Off_time is set, normal_time is the
+Reply        time interval when ACC is on. The unit is seconds, and the maximum is 65535 seconds.
+Command      03 stopping_time: the time interval when the device stops. When stopping_time is set, the device
+Example      will upload at normal_time intervals when the device is moving. The unit is seconds, and the
+             maximum is 65535 seconds.
+Remarks      04 When both ACC_Off_time and stopping_time are set at the same time, the data will be
+             uploaded according to the conditions of ACC_Off_time first.
+
+             106,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             106,10
+             Set the normal time interval to 10 seconds;
+             106,10,60
+             Set the ACC on time interval to 10 seconds, and the ACC off time interval to 60 seconds;
+             106,10,,60
+             Set the normal time interval to 10 seconds when moving, and 60 seconds when stationary;
+
+107 ­ Set the Reliable Data Transmission Mode of Server 2
+
+Supported    GPRS/SMS
+Modes
+             107,mode
+Command to
+Tracker      01 mode: The method of reliable data upload, =0 means the device automatically deletes the data
+Command      after the data is uploaded, =1 means the device needs the platform to reply to confirm data
+Description  uploaded before deleting the data; the default is 0.
+             02 When selecting UDP to upload data, it is recommended to set the mode=1 transmission mode,
+             because UDP is an unreliable transmission protocol.
+             03 When mode=0, the positioning data is uploaded with the 000 command;
+             04 When mode=1, the positioning data is uploaded with the 010 command, The receipt
+             confirmation command returned by the platform also needs to be responded with the 010
+             command, and the pack-no must also be consistent with the pack-no of the positioningdata
+             packet.
+
+Command      107,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             107,0
+                                               File Name  iStartek GPS Tracker Protocol  Ver.                          1.6
+                                               Update     2022-08-03                     Page                 16 of 53
+
+108 ­ Set Server 2 Data Sorting Transmission Mode
+
+Supported      GPRS/SMS
+Modes
+               108,mode
+Command to
+Tracker        01 mode: the method of sorting and uploading data, =0 means that real-time data is uploaded
+Command        first when there is buffer, =1 means that all data is uploaded in FIFO mode; the default is 0.
+Description    02 When real-time tracking is required, it is recommended to set mode=0 transmission mode.
+
+Command        108,<result>
+Reply          result: the result of Command Reply;
+
+                         OK-The command is set successfully;
+                         Unsupport -the command is not supported;
+                         Failed-The command format or password is incorrect and the setting failed.
+
+Command        108,0
+Example
+Remarks
+
+109 ­ Set APN
+
+Supported      GPRS/SMS
+Modes
+Command to     109,APN,APN_User_Name,APN_Password
+Tracker
+Command        01 If APN does not have an APN username and APN password, leave it blank when setting;
+Description    02 Please confirm the correct SIM card APN information with the local network operator.
+Command        109,<result>
+Reply          result: the result of Command Reply;
+
+                         OK-The command is set successfully;
+                         Unsupport -the command is not supported;
+                         Failed-The command format or password is incorrect and the setting failed.
+
+Command        109,internet,internet,internet
+Example        109,CMNET
+Remarks
+
+110 ­ Set Device ID
+
+Supported      GPRS/SMS
+Modes          110,ID
+Command to
+Tracker
+
+Command        01 ID: 3-16 digits or English letters, the default is the 15-digit IMEI number of the device;
+Description
+Command        110,<result>
+Reply          result: the result of Command Reply;
+
+                         OK-The command is set successfully;
+                         Unsupport -the command is not supported;
+                         Failed-The command format or password is incorrect and the setting failed.
+                                      File Name       iStartek GPS Tracker Protocol  Ver.                       1.6
+                                      Update          2022-08-03                     Page              17 of 53
+
+Command          110,827643321798018
+Example          110,myID123456
+Remarks
+
+111 ­Set DNS IP
+
+Supported        GPRS/SMS
+Modes
+Command to       111,IP
+Tracker
+Command          01 IP: The IP address of the DNS server, up to 16 characters;
+Description
+Command          111,<result>
+Reply            result: the result of Command Reply;
+
+                           OK-The command is set successfully;
+                           Unsupport -the command is not supported;
+                           Failed-The command format or password is incorrect and the setting failed.
+
+Command          111,121.236.189.173
+Example
+Remarks
+
+120 ­ Set Track by Distance Interval
+
+Supported        GPRS/SMS
+Modes
+Command to       120,distance
+Tracker
+Command          01 distance: The distance interval, in meters. The value range is 0~65535 meters, if it is 0, the
+Description      function is turned off; the default is 0.
+                 02 The recommended setting is not less than 100 meters.
+Command          03 When installed on a slow-moving vehicle, the track by distance interval function can be set to
+Reply            reduce the generation of GPRS traffic.
+                 120,<result>
+                 result: the result of Command Reply;
+
+                           OK-The command is set successfully;
+                           Unsupport -the command is not supported;
+                           Failed-The command format or password is incorrect and the setting failed.
+
+Command          120,200
+Example          Set distance interval to 200 meters
+Remarks
+
+121 ­ Set Heading Change Report
+
+Supported        GPRS/SMS
+Modes
+
+Command to 121,course
+Tracker
+                          File Name                    iStartek GPS Tracker Protocol  Ver.                  1.6
+                          Update                       2022-08-03                     Page         18 of 53
+
+Command      01 course: The value of heading change, in degrees. The value range is 0~180 degrees, and it is 0
+Description  to turn off the function; the default is 0.
+             02 When the driving direction changes beyond the set value, a position information will be
+Command      generated.
+Reply
+             121,<result>
+Command      result: the result of Command Reply;
+Example
+Remarks                OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             121,30
+             Set the heading change to 30 degrees
+
+122 ­ Set Heartbeat
+
+Supported    GPRS/SMS
+Modes
+Command to   122,time
+Tracker
+Command      01 time: Heartbeat interval, in minutes. The value range is 0~65535 minutes. If it is 0, the function
+Description  is turned off; the default is 0.
+             02 The heartbeat is only generated in the sleep state.
+             03 Heartbeat data is complete GPRS positioning data.
+
+Command      122,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      122,60
+Example      Set the heartbeat interval to 60 minutes
+Remarks
+
+123 ­ Set Speeding Alarm
+
+Supported    GPRS/SMS
+Modes
+Command to   123,speeding
+Tracker
+Command      01 speeding: speeding alarm value, in km/h. The value range is 0~255 km/h, if it is 0, the function
+Description  is turned off; the default is 0.
+Command      123,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      123,100
+Example      Set speeding alarm to 100 km/h
+Remarks
+                                File Name  iStartek GPS Tracker Protocol                 Ver.           1.6
+                                Update     2022-08-03                                    Page  19 of 53
+
+124 ­ Set Sleep Mode
+
+Supported    GPRS/SMS
+Modes
+
+Command to   124,mode,wait_time
+Tracker
+Command      01 mode: sleep mode, =0 to turn off sleep function, =1 to normal sleep mode, =2 to deep sleep
+Description  mode; the default is 0.
+             02 wait_time: The device enters sleep mode after no input trigger, no vibration, no phone, no
+             messages reaches the preset time, in seconds. If the sleep mode is set and the wait_time
+             parameter is not set, the default is 300 seconds;
+             03 Normal sleep mode: GPS module power off, GSM module sleeps, it can be triggered by the
+             input port, vibrate, call SMS activation;
+             04 Deep sleep mode: GPS module power off, GSM module power off, it can only be triggered by
+             the input and vibration is activated.
+
+Command      124,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             124,1
+
+             Turn on the normal sleep mode, the time to enter the sleep mode is the default 300 seconds
+
+Remarks
+
+125 ­ Set a Circular Geo-fence
+
+Supported    GPRS/SMS
+Modes
+
+Command to   125,index,flag,radium,latitude,longitude
+Tracker
+Command      01 index: Geo-fence number, the value range is 1~8, up to 8 electronic fences;
+Description  02 flag: Alarm flag, =1 means exiting the fence alarm, =2 means entering the fence alarm, =3
+             means both exiting and entering the fence alarm;
+             03 radium: the radius of the circular Geo-fence, in meters, the maximum is 65535 meters;
+             04 latitude: the longitude of the center of the Geo-fence, in degrees;
+             05 longitude: the latitude of the center of the Geo-fence, in degrees;
+             06 When latitude, longitude are empty, use the current longitude and latitude of the device;
+             07 When the radius, latitude, and longitude are empty, use the current latitude and longitude of
+             the device with a radius of 200 meters;
+             08 When flag, radius, latitude, longitude are empty, use the current location latitude and
+             longitude of the device with a radius of 200 meters, which is an alarm for exiting the fence;
+             09 Set 06, 07, 08 when the GPS signal is valid, the setting can be successful, otherwise the setting
+             will fail.
+
+Command      125,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+             125,1
+             125,1,1
+             125,1,1,200
+                                          File Name  iStartek GPS Tracker Protocol        Ver.              1.6
+                                          Update     2022-08-03                           Page     20 of 53
+
+             The above 3 commands are all for setting the first Geo-fence with current location of the device in
+
+             the longitude and latitude, the radius is 200 meters, exit the fence alarm;
+             125,1,1,200,22.540103,114.082329
+
+Remarks
+
+126 ­ Set Geo-fence Name
+
+Supported    GPRS/SMS
+Modes
+             126, index,name
+Command to
+Tracker      01 index: Geo-fence number, the value range is 1~8, up to 8 Geo-fences;
+Command      02 name: composed of 1~16 characters;
+Description  03 If name is set, it will be displayed as name in the SMS fence alarm event, see the above SMS
+             event data format;
+             04 If the name is not set, it will be displayed as the fence number in the SMS fence alarm event.
+
+Command      126,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      126,1,Home
+Example
+Remarks
+
+127 ­ Delete Circular Geo-fence
+
+Supported    GPRS/SMS
+Modes
+
+Command to 127,index
+Tracker
+
+Command      01 index: Geo-fence number, the value range is 1~8, up to 8 Geo-fences;
+Description  02 When index is empty, delete all Geo-fences.
+Command
+Reply        127,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      127,1
+Example      Delete the first Geo-fence;
+             127
+Remarks      Delete all Geo-fences.
+                               File Name  iStartek GPS Tracker Protocol                  Ver.               1.6
+                               Update     2022-08-03                                     Page      21 of 53
+
+128 ­ Set Acceleration Alarm
+
+Supported    GPRS/SMS
+Modes
+             128,acceleration
+Command to
+Tracker      01 acceleration: acceleration value, the unit is mg, the default is 450mg; when it is 0, the function
+Command      is canceled.
+Description  02 When the acceleration exceeds acceleration, an emergency acceleration alarm is generated.
+
+Command      128,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      128,450
+Example
+Remarks
+
+129 ­ Set Deceleration Alarm
+
+Supported    GPRS/SMS
+Modes
+Command      129,deceleration
+to Tracker
+Command      01 deceleration: deceleration value, the unit is mg, the default is 800mg; when it is 0, the function
+Description  is canceled.
+             03 When the deceleration exceeds the deceleration, an deceleration alarm is generated.
+Command      129,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      129,700
+Example
+Remarks
+
+130 ­ Set Harsh Turning Alarm
+
+Supported    GPRS/SMS
+Modes
+             130,value
+Command to
+Tracker      01 value: harsh turning alarm value, the smaller the value, the more sensitive, the value range is
+Command      [0,32], the default is 19; when it is 0, the function is canceled.
+Description  03 When the harsh turning exceeds preset value, a harsh turning alarm is generated.
+
+Command      130,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+             130,17
+                                 File Name  iStartek GPS Tracker Protocol  Ver.                             1.6
+                                 Update     2022-08-03                     Page                    22 of 53
+
+Remarks
+
+131 ­ Set Impact Alarm
+
+Supported    GPRS/SMS
+Modes
+Command to   131,value
+Tracker
+Command      01 value: impact sensitivity, the value range is 0~10, the smaller the value, the more sensitive, 0 is
+Description  cancel function, and the default is 5;
+             02 When using this function, it is recommended that the device be installed parallel to the
+Command      horizontal plane.
+Reply        131,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      131,5
+Example
+Remarks
+
+132 ­ Set Vibration (tow) alarm
+
+Supported    GPRS/SMS
+Modes
+             132,time,mode
+Command to
+Tracker      01 time: The duration of continuous vibration (movement). When the vibration time reaches the
+Command      set value, an alarm will be generated. The value range is 0~255, the unit is second; =0 is to turn off
+Description  the vibration alarm function, the default is 0;
+             02 mode: Check the conditions of vibration;
+             =0, detect vibration under the condition of ACC OFF, the default is 0, when set to 0, the device
+             needs to be connected to ACC detection.
+             =1, no need to detect vibration based on ACC.
+             03 If this function is used for vehicles, it is recommended to connect ACC and set mode=0.
+             04 The trailer tow will only be triggered when the tracker enters a static state (no vibration or
+             movement within 3 minutes), and vibration occurs again.
+
+Command      132,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+             132,10
+             132,10,1
+                                               File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                                               Update     2022-08-03                     Page  23 of 53
+
+133 ­ Set Idling Alarm (stop without ACC OFF)
+
+Supported    GPRS/SMS
+Modes
+Command to   133,time
+Tracker
+Command      01 time: Idling time, the value range is 0~255, the unit is minute; =0 close the function, the default
+Description  is 0;
+             02 Idling condition: ACC is ON and the speed is 0, the tracker needs to be connected to ACC
+Command      detection.
+Reply        133,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      133,5
+Example      Alarm after 5 minutes of idling
+Remarks
+
+134 ­ Set Fatigue Driving Alarm
+
+Supported    GPRS/SMS
+Modes
+
+Command to   134,fatigue_time,rest_time,total_drive_time
+Tracker
+Command      01 fatigue_time: single fatigue driving time, in minutes, 0 means to cancel the fatigue alarm
+Description  function, the default is 0 minutes. When the time of parking after ACC OFF exceeds rest_time, the
+             driving time is automatically cleared to 0.
+             02 rest_time: The minimum rest time, in minutes, the value range is [0, 255], and the default is 0
+             minutes; when the rest time exceeds rest_time, the driving time is automatically cleared to 0.
+             03 total_drive_time: total driving time. When the accumulated driving time in 24 hours exceeds
+             total_drive_time, an fatigue driving alarm will be generated. 0 means to cancelthe fatigue driving
+             function, and the default is 0 minutes;
+
+Command      134,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             134,240,20,480
+
+             Set the fatigue driving time to 240 minutes, the rest time to 20 minutes, and the cumulative
+
+             driving time to 480 minutes
+                                          File Name  iStartek GPS Tracker Protocol  Ver.                    1.6
+                                          Update     2022-08-03                     Page           24 of 53
+
+135 ­ Set Temperature Sensor
+
+Supported    GPRS/SMS
+Modes
+
+Command to   135,index,name
+Tracker
+Command      01 index: the serial number of temperature sensor, 1~8, supports up to 8 sensors at thesame
+Description  time;
+             02 name: The name of the temperature sensor, up to 16 characters.
+             03 Installation of temperature sensor:
+             A. Connect a temperature sensor, send the command 135, index, name, and the device will
+             automatically configure the sensor as the sensor at the index position;
+             B. Remove the previous sensor, connect another sensor, and send the command 135, index, name,
+             and the device will automatically configure the sensor as the sensor at the index position;
+             C. Repeat the above steps to set more sensors. Only one sensor can be connected at a time;
+             04 When the name is empty, delete the index sensor;
+             05 When both index and name are empty, delete all sensors.
+
+Command      135,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             135,1,Storage room
+             Set 1# temperature sensor, named Storage room.
+
+136 ­ Set High and Low Temperature Alarm
+
+Supported    GPRS/SMS
+Modes
+
+Command to   136,index,high_temp,low_temp
+Tracker
+Command      01 index: the serial number of the temperature sensor, 1~8;
+Description  02 high_temp: high temperature alarm value, the unit is , accurate to one decimal place, if it is
+             empty, cancel the high temperature alarm;
+
+             03 low_temp: low temperature alarm value, the unit is , accurate to one decimal place, if it is
+             empty, the low temperature alarm will be canceled;
+
+Command      136,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      136,1,40.5,-10
+Example
+Remarks      Set 1# temperature sensor high temperature alarm to 40.5, low temperature alarm to -10.
+                                     File Name  iStartek GPS Tracker Protocol  Ver.                         1.6
+                                     Update     2022-08-03                     Page                25 of 53
+
+137 ­ Get Temperature Value
+
+Supported    GPRS/SMS
+Modes
+
+Command to   137
+Tracker
+             01Read all the configured sensor temperature values.
+Command
+Description  01 If the command is failed, reply:
+Command      137,<result>
+Reply        result: the result of Command Reply;
+
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+             02 If the command is successful, reply:
+             137,<index1:Temp,index2:Temp,...,indexN:Temp>
+             index: The Nth sensor, if the response does not contain the Nth, then the Nth position is not
+             configured;
+             Temp: temperature value, the unit is , if it is empty, it means that the temperature value of the
+             sensor cannot be read.
+
+Command      137
+Example      Reply137,1:29.0,2:28.8
+Remarks
+
+138 ­ Set Fuel Tank Parameters
+
+Supported    GPRS/SMS
+Modes
+             138,index,length,wide,high
+Command to
+Tracker      01 index: the serial number of the fuel tank,
+Command          1=1# fuel tank
+Description      2=2#fuel tank
+
+             02 length: The length of the fuel tank, in mm; the default is 0.
+             03 wide: the width of the fuel tank, it is the diameter of the circle if it is a cylindrical fuel tank,the
+             unit is mm; the default is 0.
+             04 high: the height of the fuel tank, in mm; when high=0, it is a cylindrical fuel tank. The default is
+             0.
+             05 When length, wide, high, and name are all empty, delete the fuel sensor of the index.
+
+Command      138,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             138,1,1000,500,600
+             Set the length of 1# fuel tank to 1000mm, width to 500mm, and height to 600mm.
+                            File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                            Update     2022-08-03                     Page  26 of 53
+
+139 ­ Set Fuel Sensor Type
+
+Supported    GPRS/SMS
+Modes
+
+Command to   139,index,type,name
+Tracker
+Command       01 index: the serial number of the fuel tank:
+Description      1=1# fuel tank
+                 2=2#fuel tank
+Command
+Reply         02 Fuel Sensor Type:
+                 0=Not connect with fuel sensor, the default is 0.
+                 1=Liqud level fuel sensor (Capactive fuel sensor, resistence fuel sensor0~5V output)
+                 2=Ultrasonic fuel sensor (range 100CM0~5V output)
+                 3=Ultrasonic fuel sensor (range 250CM0~5V output)
+
+              03 name: The name of the fuel tank, up to 16 characters.
+             139,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      139,1,1,Right Tank
+Example      Set 1# fuel tank as the ultrasonic oil sensor connected to AD1, and the name of the fuel tank is
+             Right Tank.
+Remarks
+
+140 ­ Set Fuel Steal Alarm
+
+Supported    GPRS/SMS
+Modes
+
+Command to   140,index,theft-liter,time
+Tracker
+Command      01 index: the serial number of the fuel tank:
+Description   1=1# fuel tank
+              2=2#fuel tank
+             02 theft-liter: The change in liters of the fuel stealing alarm. An alarm will be generated when the
+             amount of fuel decreases within the time period and exceeds the set value. The unit is liter;
+             03 time: The time for check the change of the fuel quantity. An alarm will be generated when the
+             fuel quantity decreases within the time period and exceeds the set value. The value range is
+             [0,255], and the unit is second.
+
+             06 It is necessary to use commands 138, 139, 140 and 142 to set the parameters of the fuel tank
+             to detect the alarm.
+
+Command      140,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             140,1,20,60
+             Set 1# fuel tank to generate fuel steal alarm when the reduction exceeds 20 liters within 60
+             seconds.
+                                            File Name  iStartek GPS Tracker Protocol               Ver.             1.6
+                                            Update     2022-08-03                                  Page    27 of 53
+
+141 ­ Set Low Fuel Alarm
+
+Supported    GPRS/SMS
+Modes
+
+Command to 141,index,low-liter
+
+Tracker
+
+Command      01 index: the serial number of the fuel tank,
+
+Description  1=1# fuel tank
+
+             2=2#fuel tank
+
+             02 low-liter: The number of liter changes for low fuel alarm. An alarm will be generated when
+
+             the fuel volume is lower than the set value. Value range [0,255], the unit is liter;
+
+Command      01 It is necessary to use commands 138, 139, 141 and 142 to set fuel tank parameters to detect
+Reply            alarms.
+
+             141,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+
+                   Failed-The command format or password is incorrect and the setting failed.
+
+Command      141,1,10
+Example      Set 1# fuel tank to generate low fuel alarm when the fuel volume is less than 10 liters.
+Remarks
+
+142 ­ Set the data source of the fuel tank
+
+Supported    GPRS/SMS
+Modes
+
+Command to 142,index,Source
+
+Tracker
+
+Command 01 index: the serial number of the fuel tank,
+Description 1=1#fuel tank;
+
+             2=2#fuel tank;
+
+             02 Source: The data source of the fuel tank:
+
+             0=Oil value detected by AD1
+
+             1=Oil value detected by AD2
+
+             2=The oil value read by RS232-1
+
+             3=The oil value read by RS232-2
+
+             03 The default data source of 1# fuel tank is AD1, and the default data source of 2# fuel tank is
+
+             AD2.
+
+Command      142,<result>
+
+Reply        result: Set the result of the command reply;
+
+                   OK-the command is set successfully;
+
+                          Unsupport-the command is not supported;
+
+                          Failed-The command format or password is incorrect, and the setting has failed.
+
+Command      142,1,2
+Example      Set 1# fuel tank to use the fuel value read by RS232-1 to calculate the fuel volume and alarm for
+             stealing fuel and low fuel.
+Remarks
+                              File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                              Update     2022-08-03                     Page  28 of 53
+
+144 ­ Authorize RFID/iButton
+
+Supported    GPRS/SMS
+Modes
+
+Command to   144,ID1,ID2,...,IDn
+Tracker
+Command      01 ID[1,n] is the RFID/ibutton card number, one command can authorize multiple ID numbers, ID
+Description  number max 12 digits.
+             02 The RFID card number is a decimal string; the ibutton card number is a hexadecimal string, the
+Command      card number with a # sign in front is a hexadecimal number.
+Reply        03 If only command 144 is sent and the card number is empty, it enters the manual card
+             authorization mode. In this mode, the card number is automatically saved as authorization
+             number after the card is swiped. Each time the card is swiped, it will automatically delay for 30
+             seconds to maintain the swiping authorization mode, and the mode will end after 30 seconds of
+             not swiping card. Card swiping in this mode does not generate a card swiping event. We can
+             send the 146 command to query the authorization status of the authorization card. For details,
+             please refer to the 146 command description.
+             04 When the device uses the ibutton swiping function, Output2 is fixed as the card swiping sound.
+             A beep when swiping the iButton is detected.
+             05 While swippng card, OUT1 can be set to connect with relay to control the oil and electricity.
+             When you need OUT1 to control the oil and electricity, you need to use the 212 command to set
+             the 53 event to control OUT1. Swiping card to control oil and electricity is a separate control
+             logic, not according to the output mode set by the 251 command.
+             06 After set 53 event for output1 control, 53 events will not be uploaded when the unauthorized
+             card is swiped, and 53 events will be uploaded when the authorized card is swiped. When the 53
+             event control output1 is canceled, any card swiping will upload 53 events.
+             07 After setting the 53 event control output of OUT 1, when ignition if the authorized card is not
+             swiped (triggered by IN2), OUT1 will control to cut off immediately.
+             08 After swiping the authorization card, there is 60 seconds to ignite. If there is no ignition for
+             more than 60 seconds, you need to swipe the authorization card again to ignite.
+             09 When the flame is turned off, there is 60 seconds to re-ignite. If the ignition is not performed
+             for more than 60 seconds, you need to swipe the authorization card again to ignite.
+             144,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      144,123456789,987654321
+Example      Authorization ID number 123456789,987654321
+             144,#00000A678C,#00000E4321F
+Remarks      Authorization ID number 0x00000A678C, 0x00000E4321F
+             144
+             Enter manual swiping authorization mode, the device will reply "Under authorization"first, and
+             then reply OK after 30 seconds without swiping the card
+                                  File Name            iStartek GPS Tracker Protocol  Ver.           1.6
+                                  Update               2022-08-03                     Page  29 of 53
+
+145 ­ Delete RFID/iButton
+
+Supported    GPRS/SMS
+Modes
+
+Command to   145,ALL/ID1,ID2,...,IDn
+Tracker
+Command      01 ID[1,n] is the RFID/ibutton card number, one command can delete multiple ID numbers.
+Description  02 The RFID card number is a decimal string; the ibutton card number is a hexadecimal string, and
+             the card number with a # sign in front is a hexadecimal number.
+             03 145, ALL, means delete all authorization cards
+             04 If only command 145 is sent and the card number is empty, it will enter the manual card
+             deletion mode. In this mode, the card number will be deleted automatically after swiping the card.
+             Each time swipe card, it will automatically delay 30 seconds to maintain the swipe delete mode,
+             and the mode will end after 30 seconds of no swipe. Card swiping in the swipe delete mode does
+             not generate a swiping event.
+             05 When the device uses the ibutton swiping function, output2 is fixed as the card swiping sound
+             a buzzer should be connected to output 2. A beep when swiping the iButton is detected.
+
+Command      145,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+Remarks                Deleting-Authorizing
+
+             145,123456789,987654321
+
+             Delete the ID number 123456789,987654321
+             145,#00000A678C,#00000E4321F
+             Delete ID number 0x00000A678C, 0x00000E4321F
+             145,ALL
+             Delete all authorization cards
+             145
+             Enter manual swipe delete mode, the device will reply "Delete" first, and then reply OK after 30
+             seconds without swiping the card
+
+146 ­ Check Authorization Status of RFID/iButton Card
+
+Supported    GPRS/SMS
+Modes        146,ID1,ID2,...,IDn
+Command to
+Tracker
+
+Command      01 ID[1,n] is the card number of RFID/ibutton, one command can query multiple ID numbers.
+Description  02 The RFID card number is a decimal string; the ibutton card number is a hexadecimal string, and
+Command      the card number with a # sign in front of it is a hexadecimal number.
+Reply        146,<result>
+
+Command                result: Set the result of the command reply;
+Example                ID1:Flag1,ID2:Flag2,...,IDn:Flagn-Flag is status, 0 is not authorized, 1 is authorized;
+                       Unsupport-the instruction is not supported;
+                       Failed-The command format or password is incorrect, and the setting has failed.
+
+             146,123456789,987654321
+
+             Query ID number 123456789,987654321, reply 146,123456789:0,987654321:1
+             146,#00000A678C,#00000E4321F
+                                           File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                                           Update     2022-08-03                     Page  30 of 53
+
+             Query ID number 0x00000A678C,0x00000E4321F, reply 146,#00000A678C:1,#00000E4321F:1
+
+Remarks
+
+147 ­ Set RFID/iButton Authorized Ignition Time
+
+Supported    GPRS/SMS
+Modes
+Command to   147,time
+Tracker
+Command      01 time: The time period of igntion ON after swiping the authorized card. If the ignition on fails
+Description  in this time period, you need to swipe the authorized card again.
+             02 The unit is second, the value range is [0, 255], and the default is 60 seconds.
+Command      147,<result>
+Reply        Result: the result of Command Reply;
+             OK-The command is set successfully; Unsupport -the command is not supported;
+Command      Failed-The command format or password is incorrect and the setting failed.
+Example      147,30
+Remarks      Set the authorized ignition time period to 30 seconds
+
+150 ­ Set GPS Log Time Interval
+
+Supported    GPRS/SMS
+Modes
+Command to   150,time
+Tracker
+Command      01 time: GPS Log time interval, in seconds. The value range is 0~65535 seconds. If it is 0, the
+Description  function is turned off; the default is 0.
+             02 Stop recording in sleep state.
+Command      150,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      150,2
+Example      Set GPS Log time interval as 2 seconds
+Remarks
+
+151 ­ Set Vibration Detection Sensitivity
+
+Supported    GPRS/SMS
+Modes
+
+Command to   151,sen
+Tracker
+Command      01 sen: Sensitivity of vibration detection. The value range is [3,255], the smaller the value, the
+Description  more sensitive it is. The default is 3.
+                             File Name  iStartek GPS Tracker Protocol  Ver.                                 1.6
+                             Update     2022-08-03                     Page                        31 of 53
+
+Command      151,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             151,3
+             Set sensitivity as 3
+
+152 ­ Set Arming/Disarming
+
+Supported    GPRS/SMS
+Modes
+             152,flag
+Command to
+Tracker      01 flag: =0 means disarming, =1 means arming. The default is 0.
+Command      02 In the arming state, Input trigger (open door, ignition, etc.), towing, GSM interference will
+Description  generate a car theft alarm.
+             03 The arming alarm function is independent of other events such as input port triggering and
+             towing. The use of other events is not affected by arming or disarming.
+
+Command      152,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      152,1
+Example      Armed
+Remarks
+
+153 ­ Set GSM Jamming Alarm
+
+Supported    GPRS/SMS
+Modes
+Command to   153,time
+Tracker
+Command      01 time: the value is [0,255] seconds, =0 is to cancel the GSM jamming detection alarm function,
+Description  the default is 0.
+             02 When GSM is interfered for longer than the set time, an jamming alarm will be generated.
+Command      153,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      153,10
+Example      Set the jamming time to alarm after 10 seconds
+Remarks
+
+154 ­ Set low speed alarm
+
+Supported    GPRS/SMS
+Modes        154,speeding
+Command to
+                                   File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                                   Update     2022-08-03                     Page  32 of 53
+
+Tracker      01 speeding: Low speed alarm threshold, the unit is km/h. The value range is 0~255 km/h, if it is
+Command      0, the function is turned off; The default is 0.
+Description  02 Trigger alarm only when ACC is ON and the speed is lower than the threshold.
+             154,<result>
+Command      result: the result of Command Reply;
+Reply        OK-The command is set successfully; Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+Command      154,10
+Example      Set the low speed alarm as 10 km/h
+Remarks
+
+200 ­ Set SMS Time Interval
+
+Supported    GPRS/SMS
+Modes
+
+Command to   200,normal_time, ACC_Off_time,stopping_time
+Tracker
+Command      01 normal_time: Normal time interval. When the conditions of ACC_Off_time or stopping_time are
+Description  not met, the device will upload GPRS positioning data at normal_time intervals; the unit is minute,
+             and the maximum is 65535 minutes.
+Command      02 ACC_Off_time: The time interval when ACC is off. When ACC_Off_time is set, normal_time is the
+Reply        time interval when ACC is on. The unit is minute, and the maximum is 65535 minutes.
+             03 stopping_time: the time interval when the device stops. When stopping_time is set, the device
+Command      will upload at normal_time intervals when the device is moving. The unit is minute, and the
+Example      maximum is 65535 minutes.
+             04 When both ACC_Off_time and stopping_time are set at the same time, the data will be
+Remarks      uploaded according to the conditions of ACC_Off_time first
+             200,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+             Set the SMS time interval to 10 minutes;
+             200,10,60
+             Set the ACC on SMS time interval to 10 minutes, and the ACC off SMS time interval to 60 minutes;
+             200,10,,60
+             Set the SMS time interval to 10 minutes when moving, and the SMS time interval to 60 minutes
+             when stationary;
+
+201 ­ Set Authorized Phone Number
+
+Supported    GPRS/SMS
+Modes
+
+Command to 201,num1,num2,num3
+Tracker
+                             File Name           iStartek GPS Tracker Protocol  Ver.           1.6
+                             Update              2022-08-03                     Page  33 of 53
+
+Command      01 num1,num2,num3
+Description
+             01 num1,num2,num3: authorized mobile phone numbers, up to 3 authorized numbers can be set;
+Command      02 The mobile phone number is up to 16 digits.
+Reply        03 The authorized number can receive SMS alarm and phone alarm.
+             04 After setting the authorization number, the default event selected is event number
+Command      05 Delete all authorized numbers when only 201 command is issued
+Example
+Remarks      201,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             201,13412345678,13587654321,13856789123
+
+202 ­ Set Device Call Event
+
+Supported    GPRS/SMS
+Modes
+
+Command to   202,index,operation,code1,code2,...
+Tracker
+Command      01 index: the position number of the authorized number, 1 is the first number, 2 is the second
+Description  number, and 3 is the third number;
+             02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting;
+             03 code: 0=automatically answer, 1=automatically monitor, 2=automatically hang up the
+             unauthorized code, 3=automatically reply location information, each event is separated by `,';
+             04 Priority level: Auto hang up > Auto answer > Auto monitor
+
+Command      05 is the corresponding processing method of the device when the mobile phone makes a call to
+Reply        the device.
+             202,<result>
+Command      result: the result of Command Reply;
+Example
+Remarks                OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             202,1,1,0,3
+
+             Set up automatic answering and automatic reply to the first authorized number incoming call.
+
+203 ­ Set the Authorized Number SMS Alarm Event
+
+Supported    GPRS/SMS
+Modes
+
+Command to   203,index,operation,code1,code2,...
+Tracker
+Command      01 index: the position number of the authorized number, 1 is the first number, 2 is the second
+Description  number, and 3 is the third number;
+             02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting;
+             03 code: event code, see Annex A event code table, each event is separated by `,';
+             04 When the set event is generated, the SMS alarm event will be sent to the corresponding
+             authorized number.
+                                              File Name  iStartek GPS Tracker Protocol  Ver.                1.6
+                                              Update     2022-08-03                     Page       34 of 53
+
+Command      203,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             203,1,2,2,7,15,20,39
+
+             Add the first authorized number to receive alarms for events 2, 7, 15, 20, 39
+
+204 ­ Set the Characters for Event SMS Alarm
+
+Supported    GPRS/SMS
+Modes
+
+Command to   204,code,string
+Tracker
+Command      01 code: event code, see Annex A event code table;
+Description  02 string: The description character of the SMS alarm, the longest is 32 characters;
+             03 The default alarm characters are shown in the event code table.
+Command      204,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks      Failed-The command format or password is incorrect and the setting failed.
+             204,1,help
+             Set the alarm character of the first event code to"help".
+
+205 ­ Set Two-way Audio Events
+
+Supported    GPRS/SMS
+Modes
+Command to   205,index,operation,code1,code2,...
+Tracker
+Command      01 index: the position number of the authorized number, 1 is the first number, 2 is the second
+Description  number, and 3 is the third number;
+             02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting;
+Command      03 code: event code, see Annex A event code table, each event is separated by`,';
+Reply        04 When the set event occurs, a call will be made to the corresponding authorized number for
+             two-way conversation.
+             205,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      205,1,1,2,7,15,20,39
+Example      Set the first authorized number to receive two-way calls for events 2, 7, 15, 20, 39
+Remarks
+                               File Name        iStartek GPS Tracker Protocol  Ver.                         1.6
+                               Update           2022-08-03                     Page                35 of 53
+
+206 ­ Set up Listening Events
+
+Supported    GPRS/SMS
+Modes
+
+Command to   206,index,operation,code1,code2,...
+Tracker
+Command      01 index: the position number of the authorized number, 1 is the first number, 2 is the second
+Description  number, and 3 is the third number;
+
+             02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting;
+             03 code: event code, see Annex A event code table, each event is separated by `,';
+             When the event set in 04 is generated, a call will be made to the corresponding authorized
+             number to monitor the device.
+
+Command      206,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      206,1,1,2,7,15,20,39
+Example
+             Set the first authorized number to receive monitoring of events 2, 7, 15, 20, and 39
+
+Remarks
+
+210 ­ Set GPRS Alarm Event
+
+Supported    GPRS/SMS
+Modes
+Command to   210,index,operation,code1,code2,...
+Tracker
+Command      01 index: server number, 1 is the GPRS event of server 1, and 2 is the GPRS event of server 2
+Description  02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting
+             03 code: event code, see Annex A event code table, each event is separated by`,';
+Command      04 GPRS alarm event will be generated when the set event is triggered.
+Reply        210,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      210,1,1,2,7,15,20,39
+Example      Set the GPRS alarm of server 1 for events 2, 7, 15, 20, 39
+Remarks
+
+211 ­ Set Photo Taking Event
+
+Supported    GPRS/SMS
+Modes
+
+Command to 211,index,operation,code1,code2,...
+Tracker
+                                            File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                                            Update     2022-08-03                     Page  36 of 53
+
+Command      01 index: camera number, 1 is camera 1, 2 is camera 2, 3 is camera 3;
+Description  02 The camera with the smallest serial number is 1# camera, which increases in order; for
+
+Command          example, the 252 command sets the RS232-2 and RS232-4 to connect the camera, then the
+Reply            RS232-2 connects to the 1# camera, and the RS232-4 connects to the camera. It is the 2#
+                 camera.
+Command      03 operation: operation code, 1 is setting, 2 is adding, 3 is deleting
+Example      04 code: event code, see Annex A event code table, each event is separated by`,';
+Remarks      05 A photo will be taken when the set event is generated.
+             211,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             211,1,1,2,7,15,20,39
+             Set up the No. 1 camera to take photos when events 2, 7, 15, 20, 39 triggered
+
+212 ­ Set Output to Generate Output Events
+
+Supported    GPRS/SMS
+Modes
+
+Command      212,index,operation,code1,code2,...
+to Tracker
+Command      01 index: output port number, 1 is output port 1, 2 is output port 2, and 3 is output port 3;
+Description  02 operation: operation code, 1 is setting, 2 is adding, 3 is deleting
+             03 code: event code, see Annex A event code table, each event is separated by`,';
+Command      04 will generate output when the preset event is generated, and generate output according to the
+Reply        mode set by the 251 command.
+             05 Event 0, 17, 20, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 54 do not support event output.
+Command      06 After events 1, 3, 5, 7, 9, 11, 18, 21, 22, 25, 26, 43, 45, 46, 47, 49, 50 trigger output, when the
+Example      trigger source disappears, the output will return to its original state .
+Remarks      07 Please set this feature carefully.
+             212,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+             212,1,1,2,7,15,20,39
+             Set output 1 for events 2, 7, 15, 20, 39 to generate output.
+
+250 ­ Set Input Working Mode
+
+Supported    GPRS/SMS
+Modes
+
+Command to 250,input,mode,time
+Tracker
+                               File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                               Update     2022-08-03                     Page  37 of 53
+
+Command      01 input: the serial number of the input port, 1=input1, 2=input2, 3=input3, 4=input4, 5=input5,
+Description  6=input6, and so on;
+             02 mode: input port working mode, 0=low level trigger, 1=high level trigger, 2=AD analog input;
+             03 time: The trigger time of the input port. The trigger event will be generated when the trigger
+             time exceeds the set value. It is only valid for the high and low level trigger input modes, the unit
+             is ms, the value is [0, 65535], when time =0 It is triggered immediately and the default is 0.
+
+             Note:
+             IN1 is fixed to low level trigger and cannot be set.
+             IN2 is fixed as high level trigger and cannot be set.
+             IN3 only supports high and low level trigger mode settings.
+             IN4 only supports high and low level trigger mode settings.
+
+             IN5 (AD1) only supports high-level trigger and AD input mode settings.
+             IN6 (AD2) only supports high-level trigger and AD input mode settings.
+             04 The input modes for different models is different.
+             05 VT200 and VT200L series:
+             IN1 supports high and low level trigger modes, and the default is low level trigger.
+             IN2 supports high and low level trigger modes, and the default is high level trigger.
+             IN3 supports three modes of high and low level trigger and AD2 (0~6.6V) input, and the default is
+             high level trigger.
+             IN4 (AD1) supports high-level trigger and AD input mode settings, and the default is AD input
+             mode.
+
+Command      06 VT140:
+Reply        IN1 supports high and low level trigger modes, and the default is low level trigger.
+             IN2 supports high and low level trigger modes, and the default is high level trigger.
+Command      IN3 supports high and low level trigger modes, and the default is high level trigger.
+Example      IN4 supports high and low level trigger modes, and the default is high level trigger.
+Remarks      IN5 (AD1) supports two mode settings of high-level touch and AD input, and the default is AD
+             input mode.
+             IN6 (AD2) supports two mode settings of high level touch and AD input, and the default is AD
+             input mode.
+             250,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+             250,2,1,3000
+             Set input2 to high level trigger mode, the trigger time is 3000ms
+
+251 ­ Set Output Working Mode
+
+Supported    GPRS/SMS
+Modes
+Command to   251,output,mode,time,on_time,off_time,safe_speed
+Tracker
+Command      01 output: the serial number of the output port, 1= output1, 2= output2, 3= output3, and so on;
+Description  02 mode: output action mode,
+             mode=1, turn on the output (the output is in a low-level state) mode, which is a long-time on
+             state;
+             mode=2, close the output (the output port is in a floating state) mode, which is a long-term off
+             state;
+             mode=3, pulse output (pulse output is generated with on_time and off_time parameters, when
+             on_time and off_time are 0, turn the current output status into a flip change output);
+             File Name                              iStartek GPS Tracker Protocol  Ver.                     1.6
+             Update                                 2022-08-03                     Page            38 of 53
+
+Command      03 time: The time when the output is generated, the unit is second, the value range is 0~65535; =0
+Reply        is the infinite time output;
+             04 on_time: The time to turn on the output (the output port is in a low-level state),the unit is ms,
+Command      and the value range is 0~65535;
+Example      05 off_time: The time to turn off the output (the output port is in a floating state), the unit isms,
+Remarks      and the value range is 0~65535;
+             06 When on_time and off_time are both 0, it is long output mode.
+             07 safe_speed: The speed limit of the action generated by the output port, the unit is km/h, and
+             the value range is 0~255;
+
+                 When safe_speed=0 or empty, the output port immediately generates output action;
+                 When safe_speed>0, the output action is only generated when the current GPS speed is less
+             than safe_speed and in the valid positioning state
+             251,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+             251,1,3,10,500,500
+             The output 1 mode is 10 pulse output, and the pulse is a cycle of 500ms ON and 500ms OFF.
+
+252 ­ Set RS232 Port to Connect External Devices
+
+Supported    GPRS/SMS
+Modes
+Command      252,index,accessory
+to Tracker
+Command      01 index: Serial number, 1= RS232-1, 2= RS232-2, 3= RS232-3, and so on;
+Description  02 accessory: the external devices,
+             0=Empty
+Command      1=RFID card reader;
+Reply        2=OBD decoder;
+             3=Camera;
+             4=Ultrasonic fuel sensor;
+             5=WIFI Accessory
+             03 The default is that RS232-1 is the RFID reader, and RS232-2 is empty.
+             252,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      252,1,2
+Example      Set 1# RS232 connect with OBD Reader.
+
+Remarks
+                                            File Name      iStartek GPS Tracker Protocol  Ver.           1.6
+                                            Update         2022-08-03                     Page  39 of 53
+
+260 ­ Set the Resolution when taking photo
+
+Supported    GPRS/SMS
+Modes
+
+Command      260,index,resolution
+to Tracker
+Command      01 index: camera serial number, 1= 1# camera, 2= 2# camera, 3= 3# camera, 4= 4# camera;
+Description  maximum support 4 cameras.
+             02 The camera with the smallest serial number is 1# camera, which increases in order; for
+Command      example, the 252 command sets the RS232-2 and RS232-4 to connect the camera, then the
+Reply        RS232-2 connects to the 1# camera, and the RS232-4 connects to the camera. It is the 2# camera.
+             02 resolution: The resolution of the photo, defined as follows, the default is 2.
+             1: 160*128
+             2: 320*240
+             3: 640*480
+             260,<result>
+             Result: Set the result of the command reply;
+             OK-the instruction is set successfully;
+             Unsupport-the instruction is not supported;
+             Failed-The command format or password is incorrect, and the setting has failed.
+
+Remarks
+
+261 ­ Set the time interval for the camera to take photos
+
+Supported    GPRS/SMS
+Modes
+
+Command      261,index,normal_time,ACC_Off_time,stopping_time
+to Tracker
+Command      01 index: camera serial number, 1= 1# camera, 2= 2# camera, 3= 3# camera, 4= 4# camera;
+Description  maximum support 4 cameras.
+             02 normal_time: Normal time interval for taking photos. When the conditions of ACC_Off_time or
+Command      stopping_time are not met, the device will take photos at normal_time intervals; the unit is
+Reply        minutes, and the maximum is 65535 minutes.
+             03 ACC_Off_time: The time interval for taking photos when ACC is off. When ACC_Off_time is set,
+             normal_time is the time interval when ACC is on. The unit is minute, and the maximum is 65535
+             minutes.
+             04 stopping_time: The time interval for taking photos when the device stops. When
+             stopping_time is set, the upload will be performed at normal_time intervals when the device is
+             moving. The unit is minute, and the maximum is 65535 minutes.
+             05 When both ACC_Off_time and stopping_time are set at the same time, take photos with
+             ACC_Off_time first.
+             06 The event trigger source for timing photo is 0 event.
+             07 VT200 series devices support storage of up to 128 photos, and when the number of photos
+             exceeds 128, the oldest photos will be overwritten.
+             261,<result>
+             result: Set the result of the command reply;
+             OK-the instruction is set successfully;
+             Unsupport-the instruction is not supported;
+             Failed-The command format or password is incorrect, and the setting has failed.
+
+Examples     261,1,20
+             Set the time interval of 1# camera to take photos as 20 minutes;
+             261,1,20,60
+             Set the time interval of ACC on timed photographing to 20 minutes, and the time interval of ACC
+                               File Name  iStartek GPS Tracker Protocol           Ver.           1.6
+                               Update     2022-08-03                              Page  40 of 53
+
+             off timed photographing to 60 minutes;
+             261,1,20,,60
+             Set the time interval of timed photographing when moving is 20 minutes, and the time interval of
+             timed photographing when stationary is 60 minutes;
+
+Remarks
+
+262 ­ Command to take photos
+
+Supported    GPRS/SMS
+Modes
+
+Command      262,ID1,ID2,ID3,ID4
+to Tracker
+Command      01 ID: camera serial number, 1= 1# camera, 2= 2# camera, 3= 3# camera, 4= 4# camera;
+Description  maximum 4 cameras are supported.
+             02 One command can control one or more cameras to take photos.
+Command      03 If the IDn photo is successful, the reply IDn: OK, if the photo fails, the reply IDn: Err
+Reply        04 When the device responds to the 262 command, a photo event is generated at the same time.
+             The trigger source of the photo command is 34 events. The photo event data includes the photo
+             name.
+             05 VT200 series devices support storage of up to 128 photos, and when the number of photos
+             exceeds 128, the oldest photos will be overwritten.
+             262,<result>
+             result: Set the result of the command reply;
+             IDn:OK/IDn:Err-The command is set successfully;
+
+              Unsupport-the command is not supported;
+               Failed-The command format or password is incorrect, and the setting has failed.
+
+Examples     262,1,2
+Remarks      1# RS232 and 2# RS232 cameras take photos at the same time.
+
+263 ­ Read the list of photos
+
+Supported    GPRS/SMS
+Modes
+
+Command      263
+to Tracker
+Command      01 Get all the photo names of the device.
+Description  02 The device can upload up to 60 photo names in one package of data. If it is exceeded, the data
+             will be uploaded in multiple packages.
+             03 VT200 series devices support up to 128 photos storage.
+
+Command      263,<data>
+Reply        data: command reply;
+             None-no photos;
+Examples     Unsupport-the instruction is not supported;
+Remarks      Failed-the command format or password is wrong, the command failed;
+
+              pt1,pt2,pt3,...ptn-photo names, separated by commas;
+             263
+                           File Name                      iStartek GPS Tracker Protocol  Ver.                  1.6
+                           Update                         2022-08-03                     Page         41 of 53
+
+264 ­ Delete photo
+
+Supported    GPRS
+Modes
+             264,pt1,pt2,pt3,...ptn
+Command
+to Tracker   01 ptn: The name of the photo, which must be the same as the name uploaded in the photo
+Command      event.
+Description  02 One command can delete max 60 photos.
+
+Command       264,<data>
+Reply         data: command reply;
+
+Examples             OK-The command is set successfully;
+Remarks              Unsupport-the command is not supported;
+                     Failed-The command format or password is incorrect, and the setting has failed.
+
+             264,pt1,pt2
+             Delete pt1,pt2
+
+265­ Set the time interval for the camera to take photos
+
+Supported    GPRS/SMS
+Modes
+
+Command      265,photo_name
+to Tracker
+Command      01 photo_name: The name of the photo, which must be the same as the name uploaded in the
+Description  photo event
+             02 The device will upload the photo data continuously in sub-packages until the complete photo
+             data is uploaded, and each package uploads 1024 bytes of data.
+             03 The device does not automatically delete the photo after uploading the photo data, and
+             requires the platform to issue a 264 command to delete it.
+
+Command      265,<data>
+Reply        data: command reply;
+
+Examples           photo_name,offset,size,data-photo data package;
+Remarks            Unsupport-the command is not supported;
+                   Failed-The command format or password is wrong, or the photo does not exist.
+             offset: the offset position of the photo data package in the entire photo data;
+             size: The current data length of the data packet.
+             265,
+             1# RS232 and 2# RS232 cameras take photos at the same time.
+
+270-Set vehicle Type
+
+Supported    GPRS/SMS
+Modes        270,car_type
+Command
+to Tracker
+                   File Name                iStartek GPS Tracker Protocol  Ver.                              1.6
+                   Update                   2022-08-03                     Page                     42 of 53
+
+Command         01 car_type: a 4-digit hexadecimal string, the default car type is 0x0000.
+Description    02 The OBDII protocol may be different for each vehicle. If failed to read data from C12
+             OBD Reader, the corresponding vehicle code needs to be set.
+               03 When when it is used in the car with the J1939 protocol, no setting is required.
+
+Command      04 The list of vehicle type codes are as follows:
+Reply        0x0000 standard car series (default)
+             0x0100 Volkswagen/Audi/Skoda
+Examples     0x0200 Buick/Chevrolet/Cadillac
+Remarks      0x0300 Ford/Mazda
+             0x0400 Toyota/Lexus
+             0x0500 Honda/Acura
+             0x0600 Nissan/Infiniti
+             0x0700 Kia
+             0x0800 modern
+             0x0900 BMW
+             0x0A00 Mercedes
+             0x0B00 Subaru
+             0x0C00 Mitsubishi
+             0x0D00 Renault
+             0x0E00 Peugeot/Citroen
+             0x0F00 Land Rover/Jaguar
+             0x1000 Volvo
+             0x1100 Ssangyong
+             0x1200 Chrysler
+             0x1300 Chery
+             0x1400 Geely
+             0x1500 BYD
+             0x1600 Great Wall
+             0x1700 seahorse
+             0x1800 China
+             0x1900 Trumpchi
+             0x1A00 MG
+             0x1B00 Qoros
+             0x1C00 Changan Automobile
+             0x1D00 BAIC
+             270,<result>
+             result: Set the result of the command reply;
+
+                   OK-the command is set successfully;
+                   Unsupport-the command is not supported;
+                   Failed-The command format or password is incorrect, and the setting has failed.
+
+             270,0400
+             Set model to 0400 (Toyota)
+
+271 ­ OBD Command Transparent Transmission
+
+Supported    GPRS
+Mode
+
+Command 271
+to Tracker
+
+Command      01 The platform can send command to read OBD parameters or vehicle data according to the
+Description  commands supported by OBD decoder
+             02 The device transmits data to the platform through transparent transmission
+                                 File Name               iStartek GPS Tracker Protocol     Ver.           1.6
+                                 Update                  2022-08-03                        Page  43 of 53
+
+Command      01 If the command is unsuccessful, reply:
+Reply        271,<result>
+             result: the result of Command Reply;
+             Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+
+Command      02 If the command is successful, reply:
+Example      271,OBD data
+Remarks      271
+
+280 ­ Set WIFI AP
+Supported GPRS/SMS
+
+Mode
+
+Command 280,index,ssid,password
+
+to Tracker
+
+Command 01 index: the location parameter number of the AP, supports up to 32 APs;
+
+Description 02 ssid: AP SSID, up to 32 characters;
+
+             03 password: AP login password, up to 32 characters.
+
+             04 When ssid and password are empty, delete the AP of index;
+
+             05 When index, ssid, and password are all empty, delete all APs.
+
+             06 Under normal conditions of WIFI network, use WIFI to upload data first.
+
+Command 280,<result>
+
+Reply        result: Set the result of the command reply;
+
+             OK ­ the command is set successfully;
+
+             Unsupport - the command is not supported;
+
+             Failed - The command format or password is incorrect, and the setting fails.
+
+Command 280,1,istartek,12345678
+
+Example      Set the SSID and password of the first AP.
+
+Remarks
+
+600 ­ Set SMS Command Password
+
+Supported    GPRS/SMS
+Modes
+
+Command to   600,password
+Tracker
+Command      01 password: SMS command password, 4 characters, can be composed of any numbers, letters,
+Description  and symbols; the default is 0000.
+Command      600,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      600,PW37
+Example      Set SMS command passwork as PW37
+Remarks
+                             File Name  iStartek GPS Tracker Protocol  Ver.                                        1.6
+                             Update     2022-08-03                     Page                               44 of 53
+
+601 ­ Set SMS Time Zone
+
+Supported    GPRS/SMS
+Modes
+             601,time
+Command
+to Tracker   01 time: Time zone, the unit is minutes, the value range is -720~720, the default is UTC 0;
+Command      02 When the time zone is set, SMS data use time in the set time zone;
+Description  03 The time in GPRS data uses UTC0 time and cannot be set
+
+Command      601,<result>
+Reply        result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      601,480
+Example      Set SMS time zone to UTC+8 time zone
+             601,-480
+             Set the SMS time zone to UTC-8 time zone
+
+Remarks
+
+602 ­ Set SIM Card PIN Code
+
+Supported    GPRS/SMS
+Modes
+Command to   602,pin
+Tracker
+Command      01 pin: The PIN code of the SIM card, a 4-digit number;
+Description
+Command      602,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+             602,1234
+             Set the PIN code to 1234
+
+610 ­ Set Initial Mileage
+
+Supported    GPRS/SMS
+Modes
+
+Command to   610,mileage
+Tracker
+             01 mileage: The initial mileage in GPRS data, in meters.
+Command
+Description  610,<result>
+Command      result: the result of Command Reply;
+Reply
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+                                        File Name  iStartek GPS Tracker Protocol  Ver.                      1.6
+                                        Update     2022-08-03                     Page             45 of 53
+
+Command      610,1000
+Example      Set the initial mileage of GPRS data to 1000 meters.
+Remarks
+
+611 ­ Clear GPRS/SMS Buffer
+
+Supported    GPRS/SMS
+Modes
+Command to   611,flag
+Tracker
+Command      01 flag
+Description        =1: Clear the GPRS cache of server 1;
+                   =2: Clear the GPRS cache of server 2;
+Command            =3: Clear SMS cache
+Reply
+             611,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      611,1
+Example      Clear the GPRS cache of server 1.
+Remarks
+
+612 ­ Initialization Parameter
+
+Supported    GPRS/SMS
+Modes
+Command      612,flag
+to Tracker
+Command      01 flag
+Description
+                  =1: Initialize other parameters except GPRS parameters such as IP, Port, APN, GPRS interval;
+Command            =2: Initialize the SMS password to 0000;
+Reply              =3: Initialize all parameters.
+             612,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      612,3
+Example      Initialize all parameters
+Remarks
+
+620 ­ Set Device LED Indicator Mode
+
+Supported    GPRS/SMS
+Modes
+
+Command to   620,flag
+Tracker
+Command      01 flag=0, when the device is working, the LED indicator works normally to indicate the working
+Description  status. The default is 0;
+             02 flag=1, when the device is working, the LED is off without indication.
+             03 When the device is turned on, the LED indicator will work for 10 seconds and then turn off.
+             When any button is pressed, the LED indicator will work for 10 seconds and then turn off.
+                                             File Name  iStartek GPS Tracker Protocol  Ver.                 1.6
+                                             Update     2022-08-03                     Page        46 of 53
+
+Command      620,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+
+             620,1
+             Turn off the LED indication.
+
+800 ­ Get Current Location
+
+Supported    GPRS/SMS
+Modes
+
+Command to   800
+Tracker
+Command      01 Get current location information;
+Description  02 When SMS Command to Tracker, reply the google map link of the location;
+             03 When GPRS Command to Tracker, reply the location data of 0 event.
+Command      01 If the command failed, reply:
+Reply        800,<result>
+             result: the result of Command Reply;
+Command
+Example                Unsupport-The instruction is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+             02 If the command is successful, the current location information will be returned.
+             800
+
+Remarks
+
+801 ­ Get Device SN, IMEI, Software Version
+
+Supported    GPRS/SMS
+Modes
+
+Command to 801
+Tracker
+
+Command      01 Get the SN, IMEI, and software version of the device
+Description
+Command      01 If the command failed, reply:
+Reply        801,<result>
+             result: the result of Command Reply;
+
+                       Unsupport-The instruction is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+             02 If the command is successful, reply:
+             801, SN, IMEI, software version
+
+Command      801
+Example      801,143190870823,869912033012424,VT100_V100
+Remarks
+                                  File Name            iStartek GPS Tracker Protocol  Ver.           1.6
+                                  Update               2022-08-03                     Page  47 of 53
+
+802 ­ Get Device Working Status
+
+Supported    GPRS/SMS
+Modes
+
+Command      802
+to Tracker
+Command      01 Get the working status of device, including device system status, input status, output status,
+Description  CSQ value, satellite number, internal battery voltage, external power supply voltage
+Command      01 If the command failed, reply:
+Reply        802,<result>
+             result: the result of Command Reply;
+Command
+Example                Unsupport-The instruction is not supported;
+Remarks                Failed-The command format or password is incorrect and the setting failed.
+             02 If the command is successful, reply:
+             802, device system status, input status, output status, CSQ value, satellite number, internal battery
+             voltage, external power supply voltage
+             03 Device system status, 8-digit hexadecimal character format, see the "system-sta" note in GPRS
+             data.
+             04 Input status, 2-digit hexadecimal character format, see "in-sta" note in GPRS data.
+             05 Output status, 2-digit hexadecimal character format, see "out-sta" note in GPRSdata.
+             06 CSQ value: decimal string.
+             07 satellite number: decimal string.
+             08 Internal battery voltage: decimal string, accurate to two decimal places.
+             External power supply voltage: decimal string, accurate to two decimal places.
+             802
+             802,0000000F,03,01,31,12,4.15,00.00
+
+803 ­ Check SIM Card CCID
+
+Supported    GPRS/SMS
+
+Modes
+
+Command to 803
+
+Tracker
+
+Command      Check SIM Card CCID
+
+Description
+
+Command      01 If the command is failed, reply:
+
+Reply        803,<result>
+
+             result: the result of the command reply;
+
+                Unsupport-This parameter query is not supported;
+
+                Failed-The command format or password is incorrect and the setting failed.
+
+Command      02 If the command is successful, reply:
+Example      803,CCID
+Remarks      803
+             803,12345678901234567890
+
+808 ­ Check device Parameters
+
+Supported    GPRS/SMS
+Modes
+                                              File Name  iStartek GPS Tracker Protocol  Ver.                1.6
+                                              Update     2022-08-03                     Page       48 of 53
+
+Command      808,cmd
+to Tracker
+Command      01 Query the parameters of the device
+Description  02 cmd is the corresponding setting parameter command, such as 100, 102, please refer to the
+             corresponding command description for the parameter content
+Command      01 If the command is failed, reply:
+Reply        808,cmd,<result>
+             result: the result of the command reply;
+
+                   Unsupport-This parameter query is not supported;
+             02 If the command is successful, reply:
+             808,cmd,parameters
+
+Command 808,100
+
+Example      808,100,1,istartracker.com,8011
+
+Remarks
+
+900 ­ Output Control
+
+Supported    GPRS/SMS
+Modes
+
+Command to   900,output,flag,time,safe_speed
+Tracker
+Command      01 output: the serial number of the output port, 1= output1, 2= output2, 3= output3, and so on;
+Description  02 flag=1, turn on the output (the output is in low level state). flag=0, turn off the output (the
+             output port is in a floating state) mode;
+             03 time: The time when the output is generated, the unit is ms, the value range is 0~65535;
+             time=0 or empty, it is an infinite time output;
+             04 safe_speed: The speed limit of the action generated by the output, the unit is km/h, and the
+             value range is 0~255;
+
+                   When safe_speed=0 or empty, the output immediately generates output action;
+                   When safe_speed>0, the output action is only generated when the current GPS speed is less
+             than safe_speed and in the valid positioning state
+             05 The command control output has priority over the output generated by other events.
+
+Command      900,<result>
+Reply        result: the result of Command Reply;
+
+Command                OK-The command is set successfully;
+Example                Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+Remarks
+             900,2,1
+             output2 produces output
+             900,1,1,100
+             Output1 generates 100ms output
+             900,1,1,0,10
+             Output1 produces output when the speed is lower than 10km/h
+                                 File Name  iStartek GPS Tracker Protocol  Ver.                              1.6
+                                 Update     2022-08-03                     Page                     49 of 53
+
+901 ­ Output ControlMode Output
+
+Supported    GPRS/SMS
+Modes
+
+Command to 901,output,flag
+Tracker
+
+Command       01 output: the serial number of the output port, 1= output1, 2= output2, 3= output3, and so on;
+Description  02 flag=1, the output action will be generated according to the mode set by the 251 command.
+             flag=0, the output action will be stopped.
+
+Command      03 The command control output has priority over the output generated by other events.
+Reply        901,<result>
+             result: the result of Command Reply;
+Command
+Example                OK-The command is set successfully;
+Remarks                Unsupport -the command is not supported;
+             Failed-The command format or password is incorrect and the setting failed.
+             901,2,1
+             Output2 produces output
+
+910 ­ Restart Device or Module
+
+Supported    GPRS/SMS
+Modes
+Command      910,operation
+to Tracker
+Command      01 operation
+Description      =1: Restart the GSM module
+                   =2: Restart the GPS module
+Command            =3: Restart the device
+Reply
+             910,<result>
+             result: the result of Command Reply;
+
+                       OK-The command is set successfully;
+                       Unsupport -the command is not supported;
+                       Failed-The command format or password is incorrect and the setting failed.
+
+Command      910,3
+Example      Reboot the device
+Remarks
+
+990 ­ FOTA Upgrade Detection
+
+Supported    GPRS
+Modes
+             990,firmware_name
+Command
+to Tracker   01 firmware_name: The file name of the software package, ASCII character type, only the file
+Command      name, without the directory.
+Description  02 After receiving the file name, the device compares with its own software version, and the reply
+             sign informs the platform whether the upgrade can be performed.
+             03 FOTA starts with this command.
+                                  File Name  iStartek GPS Tracker Protocol  Ver.                           1.6
+                                  Update     2022-08-03                     Page                  50 of 53
+
+Command      990,<flag><device code><maximum support FOTA single data packet length><software
+Reply        version>
+
+Command      01 flag: comparison result of software file name, 1 byte, hexadecimal data type.
+Example      =0x01, indicating that the OTA file matches the version of the device itself, and the upgrade can
+Remarks      be performed.
+             =0x02, it means that the OTA file does not match the version of the device itself. If upgrade may
+             cause the device to crash, the platform should pop up a prompt window. If you are sure to
+             upgrade, you can directly perform the upgrade.
+
+             02 Machine code: 2 bytes, hexadecimal character type, big-endian alignment.
+             03 Maximum support for FOTA single data packet length: the data length of a single software
+             package, 2 bytes, hexadecimal character type, big-endian alignment, the default support is 1024
+             bytes (0x0400).
+             Software version: ASCII character type, the software version of the device itself.
+             Send990,VT100_V101
+             Answer990,<0x01><0x0003><0x0400><VT100_V100>
+
+991 ­ FOTA Upgrade Authorization
+
+Supported    GPRS
+Modes
+Command      991
+to Tracker
+Command      01 The platform issues instructions to authorize the device to enter the OTA state. After OTA
+Description  authorization, if the device fails to receive the OTA data packet from the platform for more than 20
+             minutes, it will exit the OTA state. At this time, the platform needs to perform the 990->991
+             process again.
+             02 After OTA is authorized, the device will no longer send timing interval data or alarm data until
+             it exits the OTA state.
+
+Command      991,<flag>
+Reply
+                   flag: 1 byte, hexadecimal data type.
+                   =0x01 means authorization is successful.
+                   =0x00 means authorization failed.
+                   =0xFF, OTA authorization is illegal, that is, the 990 command is not issued in advance to
+             upgrade the detection.
+
+Command      Send991
+Example      Answer991,<0x01>
+Remarks
+
+992 ­ FOTA data package download
+
+Supported    GPRS
+Modes        992, <OTA packet address offset (4 bytes)><OTA packet length (2 bytes)><OTA packet>
+Command
+to Tracker
+                                  File Name  iStartek GPS Tracker Protocol  Ver.           1.6
+                                  Update     2022-08-03                     Page  51 of 53
+
+Command      01 OTA data packet address offset: The address offset of the OTA data packet sent this time in the
+Description  entire OTA file, 4 bytes are big-endian, hexadecimal number;
+             02 OTA data packet length: the length of the OTA data packet sent this time, 2 bytes are big-endian,
+Command      hexadecimal number;
+Reply        03 OTA data packet: The n-byte OTA data packet sent this time (assuming the length of the OTA
+             data packet is n)
+Command
+Example      992, <OTA packet address offset (4 bytes)><OTA packet length (2 bytes)><flag (1 byte)>
+Remarks      01 OTA data packet address offset: corresponds to the data packet address offset issued by the
+             platform;
+             02 OTA packet length: corresponds to the length of the packet sent by the platform;
+             03 flag:
+             =0x01, received and saved correctly, the platform can then send the OTA data package;
+             =0x00, there is an error in receiving or saving, the platform needs to re-send the same OTA data
+             package to the terminal;
+             =0xFF, the OTA is not authorized or the authorization has timed out.
+             Send992
+             Answer992,<0x01>
+
+993 ­ FOTA Data Check
+
+Supported    GPRS
+Modes
+             993, <OTA data length (4 bytes)> <OTA data check code (2 bytes)>
+Command
+to Tracker   01 After the platform sends all the OTA data to the device, it checks whether the data received by
+Command      the device is wrong.
+Description  02 OTA data length: the length of all OTA data (excluding the checksum of the last two bytes of
+             the OTA file), 4 bytes are big-endian aligned, hexadecimal number.
+             03 OTA data check code: the checksum of all OTA data, the last two bytes of OTA file, hexadecimal
+             number.
+
+Command      993,<flag(1byte)> flag
+Reply
+                   0x01, the data verification is correct, the platform can send 994 command to update the
+             firmware;
+
+                   0x00, data verification error, need to restart FOTA process;
+                   =0xFF, OTA is not authorized or authorization timed out.
+
+Command      Send993,
+Example      Answer993,<0x01>
+Remarks
+
+994 ­ Device Update FOTA Program
+
+Supported    GPRS
+Modes
+
+Command      994
+to Tracker
+Command      01 After getting the correct verification result of the terminal, the platform instructs the device to
+Description  update the OTA program.
+             Note: You must ensure that the checksum is correct before using this command, otherwise
+             the device may crash.
+                                     File Name  iStartek GPS Tracker Protocol  Ver.                  1.6
+                                     Update     2022-08-03                     Page         52 of 53
+
+Command      Send994,
+Example      Answer994,<0x01>
+
+Remarks
+
+995 ­ Cancel FOTA
+
+Supported    GPRS
+Modes
+
+Command to 995
+
+Tracker
+
+Command After FOTA is authorized, the platform can cancel FOTA accordingly.
+
+Description
+
+Comman       995,<flag>
+d Reply          0x01FOTA cancel success.
+
+Command      Send995
+Example      Answer995,<0x01>
+Remarks
+
+Appendix A-Alarm Event Codes and Alarm Characters
+
+The following is the corresponding table of alm-code and alm-data:
+
+alm-code alm-data               SMS Alarm Head String               Description
+                                                                    Time interval tracking
+0            NULL               Interval                            Input1 active
+                                                                    Input1 inactive
+1            NULL               SOS                                 Input2 active
+                                                                    Input2 inactive
+2            NULL               IN1 Inactive                        Input3 active
+                                                                    Input3 inactive
+3            NULL               Ignition On                         Input4 active
+                                                                    Input4 inactive
+4            NULL               Ignition Off                        Input5 active
+                                                                    Input5 inactive
+5            NULL               Door Open                           Input6 active
+                                                                    Input6 inactive
+6            NULL               Door Close                          Ext-power low
+                                                                    Ext-power lost
+7            NULL               IN4                                 Ext-power re-connect
+                                                                    Internal battery low
+8            NULL               IN4 Inactive                        GPS antenna cut
+                                                                    Speeding alarm
+9            NULL               IN5                                 Enter sleep
+                                                                    Exit sleep
+10           NULL               IN5 Inactive                        Exit geo-fence
+                                                                    Enter geo-fence
+11           NULL               IN6                                 Lose GPS Signal
+                                                                    Get GPS Signal
+12           NULL               IN6 Inactive                        Heading Change
+
+17           NULL               Low Ext-Power
+
+18           NULL               Ext-Power Cut
+
+19           NULL               Ext-Power On
+
+20           NULL               Low Battery
+
+21           NULL               GPS Antenna Cut
+
+22           NULL               Speeding
+
+23           NULL               Enter Sleep
+
+24           Trigger            Wake Up
+
+25           n: index of fence  Exit Fence
+
+26           n: index of fence  Enter Fence
+
+27           NULL               Lose GPS Signal
+
+28           NULL               Get GPS Signal
+
+29           NULL               Heading Change
+                               File Name    iStartek GPS Tracker Protocol  Ver.           1.6
+                               Update       2022-08-03                     Page  53 of 53
+
+30  NULL                   Distance            Distance tracking
+                                               Heartbeat Report
+31  NULL                   /                   Device Power On
+                                               Device Power Off
+32  NULL                   Power On            Reply Current
+                                               Tow Alarm
+33  NULL                   Power Off           Stop Moving
+                                               Start Moving
+34  NULL                   Current             Idling Alarm
+                                               Harsh accelerate
+35  NULL                   Tow                 Harsh braking
+                                               Harsh Turning
+36  NULL                   Stop Moving         Impact Alarm
+                                               Fatigue driving
+37  NULL                   Start Moving        Fatigue relieve
+                                               Overtime driving
+38  NULL                   Idling              Temperature High
+                                               Temperature Low
+39  NULL                   Harsh Accelerate    Fuel Steal Alarm
+                                               Low Fuel Alarm
+40  NULL                   Harsh Braking       GSM Jammed
+                                               GSM No Jamming
+41  NULL                   Harsh Turning       Stealing Alarm
+
+42  NULL                   Impact              RFID Event
+
+43  NULL                   Fatigue Driving     Picture Event
+                                               Anti Disassembly Alarm
+44  NULL                   Fatigue Relieve    Diagnostic Trouble Code (diagnostic
+                                              trouble code alarm).
+45  NULL                   Overtime Driving   The first byte indicates the fault
+                                              category, 00 is J1979 fault, 01 is J193
+46  n: index of Temperature Temperature High  9 fault; every subsequent 3 bytes
+                                              indicate a fault code.
+47  n: index of Temperature Temperature Low   J1979 fault code:
+                                              The first two bytes indicate the fault
+48  n: index of tank       Fuel Steal         code, and the last byte indicates the
+                                              status (01: indicates the solved fault,
+49  n: index of tank       Fuel Level Low     02: represents the pending fault).
+                                              For example: 00019501019602
+50  NULL                   GSM Jammed         It is J1979 fault type, fault code is
+                                              P0195, P0196.
+51  NULL                   GSM No Jamming     J1939 fault code:
+                                              3 bytes are represented as 19 bits
+52  Trigger                Stealing           (SPN) + 5 bits (FMI)
+                                              For example: 01F40305F80307
+53  RFID/iButton number,   Swiping Card       It is J1939 fault type, fault code is
+                                              SPN1012-5, SPN1016-7
+    Hexadecimal character                     Low Speed Alarm
+
+54  Picture name, character /
+
+55  NULL                   dismantling
+
+56  Trouble Code           Trouble
+
+    Hexadecimal character
+
+57  Low Speed              Low Speed
+
