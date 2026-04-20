@@ -18,7 +18,9 @@ function loadDotenv(): void {
 loadDotenv();
 
 export const config = {
-  httpPort: parseInt(process.env.HTTP_PORT ?? '3001', 10),
+  // Railway / Fly / Heroku inject PORT; honor it first, fall back to HTTP_PORT,
+  // then our local default 3001.
+  httpPort: parseInt(process.env.PORT ?? process.env.HTTP_PORT ?? '3001', 10),
   tcpPort: parseInt(process.env.TCP_PORT ?? '8800', 10),
   publicHost: process.env.PUBLIC_HOST ?? '127.0.0.1',
   jwtSecret: process.env.JWT_SECRET ?? 'dev_secret_change_me',
