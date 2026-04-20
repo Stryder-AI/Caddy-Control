@@ -17,11 +17,28 @@ function loadDotenv(): void {
 }
 loadDotenv();
 
+// TCP is sacred — trackers must reach it exactly at TCP_PORT (default 8800).
+// HTTP can live on any free port. If PORT (Railway/Fly/Heroku injection) would
+// collide with TCP_PORT, ignore it and fall back to HTTP_PORT / 3001.
+const TCP_PORT = parseInt(process.env.TCP_PORT ?? '8800', 10);
+const envHttpPort = parseInt(process.env.PORT ?? process.env.HTTP_PORT ?? '3001', 10);
+const HTTP_PORT =
+  envHttpPort === TCP_PORT
+    ? parseInt(process.env.HTTP_PORT ?? '3001', 10) === TCP_PORT
+      ? 3001 // last-resort fallback
+      : parseInt(process.env.HTTP_PORT ?? '3001', 10)
+    : envHttpPort;
+
+if (envHttpPort === TCP_PORT) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[config] PORT=${envHttpPort} collides with TCP_PORT; using HTTP_PORT=${HTTP_PORT} for HTTP`
+  );
+}
+
 export const config = {
-  // Railway / Fly / Heroku inject PORT; honor it first, fall back to HTTP_PORT,
-  // then our local default 3001.
-  httpPort: parseInt(process.env.PORT ?? process.env.HTTP_PORT ?? '3001', 10),
-  tcpPort: parseInt(process.env.TCP_PORT ?? '8800', 10),
+  httpPort: HTTP_PORT,
+  tcpPort: TCP_PORT,
   publicHost: process.env.PUBLIC_HOST ?? '127.0.0.1',
   jwtSecret: process.env.JWT_SECRET ?? 'dev_secret_change_me',
   frontendOrigin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
