@@ -23,22 +23,37 @@ import { config } from '../util/config.js';
 export function startTcpServer(): net.Server {
   const server = net.createServer((socket) => {
     const remote = `${socket.remoteAddress}:${socket.remotePort}`;
-    logger.info({ remote }, 'device connected');
+    // Use debug here — a connection isn't meaningful until we see a valid
+    // iStartek frame. We log info once the device is bound to a cart slot.
+    logger.debug({ remote }, 'tcp connection');
 
     const fb = new FrameBuffer();
     let boundCartId: string | null = null;
     let boundDeviceId: string | null = null;
+    let junkFrames = 0;
     socket.setNoDelay(true);
     socket.setKeepAlive(true, 30_000);
+
+    // If a client sends only garbage for 20 seconds, kick it. Stops port
+    // scanners from parking connections on us indefinitely.
+    const unboundKick = setTimeout(() => {
+      if (!boundCartId) {
+        logger.debug({ remote }, 'kicking unbound socket (20s, no protocol frame)');
+        socket.destroy();
+      }
+    }, 20_000);
 
     socket.on('data', (chunk) => {
       for (const line of fb.push(chunk)) {
         tapRawPacket('rx', remote, line);
-        // Events start with '&&'; command replies (tracker to server) also use '&&'
-        // per spec but the cmd field holds the command code (e.g. 900,OK).
-        // We detect an event-vs-reply by whether the cmd field is 000/010/020
-        // (event) or a 3-digit code (reply).
         handleLine(socket, line);
+        if (!boundCartId && !line.startsWith('&&')) {
+          junkFrames += 1;
+          if (junkFrames >= 3) {
+            socket.destroy();
+            return;
+          }
+        }
       }
     });
 
@@ -91,7 +106,22 @@ export function startTcpServer(): net.Server {
         return;
       }
 
-      logger.warn({ reason: (decoded as any).reason, line }, 'unparsable frame');
+      // Frames from real VT-100 devices start with '&&'. Anything else is
+      // almost certainly port-scanning noise — downgrade to debug so the
+      // warn channel stays meaningful.
+      const looksLikeIStartek = line.startsWith('&&');
+      const preview = line.length > 48 ? line.slice(0, 48) + '...' : line;
+      if (looksLikeIStartek) {
+        logger.warn(
+          { reason: (decoded as any).reason, remote, preview },
+          'unparsable iStartek frame'
+        );
+      } else {
+        logger.debug(
+          { remote, bytes: line.length, preview: JSON.stringify(preview) },
+          'non-protocol bytes (probably a port scanner)'
+        );
+      }
     }
 
     socket.on('error', (err) => {
@@ -99,8 +129,13 @@ export function startTcpServer(): net.Server {
     });
 
     socket.on('close', () => {
+      clearTimeout(unboundKick);
       unregisterSocket(socket);
-      logger.info({ remote, cartId: boundCartId }, 'device disconnected');
+      if (boundCartId) {
+        logger.info({ remote, cartId: boundCartId }, 'device disconnected');
+      } else {
+        logger.debug({ remote }, 'unbound socket closed');
+      }
     });
   });
 
