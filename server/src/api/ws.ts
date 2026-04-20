@@ -41,7 +41,7 @@ export function initWs(httpServer: HttpServer): IOServer {
       ?? socket.handshake.query?.token;
     if (typeof token !== 'string' || !token) return next(new Error('no token'));
     try {
-      const user = jwtVerify(token) as AuthPayload;
+      const user = jwtVerify(token) as unknown as AuthPayload;
       (socket.data as { user: AuthPayload }).user = user;
       next();
     } catch {
