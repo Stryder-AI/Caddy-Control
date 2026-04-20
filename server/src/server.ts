@@ -23,10 +23,13 @@ async function main(): Promise<void> {
   await seed();
 
   // 2. HTTP + WS
+  // Bind to :: (IPv6 dual-stack) rather than 0.0.0.0 so Railway's private
+  // IPv6 network can reach the healthcheck endpoint. On Linux, listening on
+  // :: also accepts IPv4 connections via IPv4-mapped IPv6 addresses.
   const app = await buildHttp();
-  await app.listen({ host: '0.0.0.0', port: config.httpPort });
+  await app.listen({ host: '::', port: config.httpPort });
   initWs(app.server);
-  logger.info({ port: config.httpPort }, 'HTTP + Socket.io listening');
+  logger.info({ port: config.httpPort }, 'HTTP + Socket.io listening on :: (dual-stack)');
 
   // 3. TCP (iStartek)
   const tcp = startTcpServer();
