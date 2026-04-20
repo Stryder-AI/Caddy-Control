@@ -32,7 +32,11 @@ COPY --from=builder /app/src/persistence/schema.sql ./dist/persistence/schema.sq
 COPY package.json ./
 
 RUN mkdir -p /app/data /app/logs
-VOLUME ["/app/data"]
+
+# Persistent state lives at /app/data. On Railway, attach a managed Volume
+# and mount it at /app/data via the Railway dashboard (Service → Settings →
+# Volumes). Do not use the Dockerfile VOLUME instruction — Railway bans it.
+# On self-hosted Docker, use:  -v caddy-data:/app/data
 
 EXPOSE 3001 8800
 
